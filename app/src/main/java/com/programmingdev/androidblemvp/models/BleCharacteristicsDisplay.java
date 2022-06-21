@@ -3,7 +3,7 @@ package com.programmingdev.androidblemvp.models;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 
-import com.vithamas.blecommmodule.Property;
+import com.programmingdev.blecommmodule.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;

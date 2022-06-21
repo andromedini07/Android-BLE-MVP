@@ -13,4 +13,13 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!--Dialog Fragment Theme-->
+    <style name="AppTheme.Dialog.Custom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowMinWidthMajor">85%</item>
+        <item name="android:windowMinWidthMinor">85%</item>
+        <!--Cancels dialog when a user touches outside of dialog to close-->
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
 </resources>

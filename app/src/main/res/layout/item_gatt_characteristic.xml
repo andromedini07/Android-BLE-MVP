@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:padding="@dimen/_4sdp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewCharacteristicName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Characteristic Name"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView113"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:text="UUID: "
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_8sdp" />
+
+                <TextView
+                    android:id="@+id/textViewCharacteristicUUID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:text="Characteristic UUID"
+                    android:textSize="@dimen/_8sdp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView114"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:text="Properties: "
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_8sdp" />
+
+                <TextView
+                    android:id="@+id/textViewProperties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:text="Characteristic Properties"
+                    android:textSize="@dimen/_8sdp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutValueDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView111"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:text="Value (0x): "
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_8sdp" />
+
+                    <TextView
+                        android:id="@+id/textViewValuesBytes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:text="AB CD EF"
+                        android:textSize="@dimen/_8sdp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewValue112"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:text="Value (ASCII): "
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_8sdp" />
+
+                    <TextView
+                        android:id="@+id/textViewValuesAscii"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:text="Wiki"
+                        android:textSize="@dimen/_8sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonReadData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Read"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonWriteData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Write"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonWriteNoResponse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Write"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonEnableNotification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notify"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonEnableIndication"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Indicate"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutDescriptorListDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewDescriptor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_gatt_descriptors" />
+
+    </LinearLayout>
+</LinearLayout>

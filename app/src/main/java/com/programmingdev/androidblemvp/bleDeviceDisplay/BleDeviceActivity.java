@@ -2,10 +2,6 @@ package com.programmingdev.androidblemvp.bleDeviceDisplay;
 
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -16,31 +12,53 @@ import androidx.navigation.ui.NavigationUI;
 import com.programmingdev.androidblemvp.R;
 import com.programmingdev.androidblemvp.databinding.ActivityBleDeviceBinding;
 
-public class BleDeviceActivity extends AppCompatActivity {
+import android.bluetooth.BluetoothGattService;
+
+import androidx.appcompat.app.ActionBar;
+
+import com.programmingdev.androidblemvp.utils.BaseActivity;
+import com.programmingdev.androidblemvp.utils.console;
+
+import java.util.ArrayList;
+
+public class BleDeviceActivity extends BaseActivity {
+    private static final String TAG = "BleDeviceActivity";
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityBleDeviceBinding binding;
+    private String selectedDeviceAddress;
+    private ArrayList<BluetoothGattService> serviceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityBleDeviceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_ble_device);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        binding.toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
+
+        selectedDeviceAddress = getIntent().getStringExtra("SelectedDeviceAddress");
+        serviceList = getIntent().getParcelableArrayListExtra("ServiceList");
+
+        for (BluetoothGattService service : serviceList) {
+            console.log(TAG, "service = " + service.getUuid());
+        }
+
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_ble_device);
+        Bundle bundle = new Bundle();
+        bundle.putString("SelectedDeviceAddress", selectedDeviceAddress);
+        bundle.putParcelableArrayList("ServiceList", serviceList);
+        navController.setGraph(R.navigation.nav_graph, bundle);
+//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
     }
 
     @Override
@@ -48,5 +66,22 @@ public class BleDeviceActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_ble_device);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    public void setSubtitle(String subTitle) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setSubtitle(subTitle);
+        }
     }
 }

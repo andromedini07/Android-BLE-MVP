@@ -22,4 +22,13 @@
         <!--Cancels dialog when a user touches outside of dialog to close-->
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
+
+    <style name="Theme.AndroidBLEMVP.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.AndroidBLEMVP.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.AndroidBLEMVP.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

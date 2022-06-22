@@ -7,18 +7,16 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.programmingdev.androidblemvp.R;
-import com.programmingdev.androidblemvp.databinding.FragmentFirstBinding;
+import com.programmingdev.androidblemvp.databinding.FragmentBleServiceDisplayBinding;
 
-public class FirstFragment extends Fragment {
+public class BleServiceDisplayFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
+    private FragmentBleServiceDisplayBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentFirstBinding.inflate(inflater, container, false);
+        binding = FragmentBleServiceDisplayBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -28,8 +26,7 @@ public class FirstFragment extends Fragment {
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+
             }
         });
     }

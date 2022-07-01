@@ -29,16 +29,28 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
 
     private IBleServiceDisplayView view;
     private final IBleService bleService;
+    private IBluetoothStateObserver bluetoothStateObserver;   // Observer that reports Bluetooth Adapter State Changes. Bluetooth Enabling/Disabling states are reported via this observer
 
     public BleServiceDisplayPresenter(IBleServiceDisplayView view, IBleService bleService) {
         this.view = view;
         this.bleService = bleService;
         this.bleService.registerBleServiceCallbacks(this);
+        this.bluetoothStateObserver = null;
+    }
+
+    public BleServiceDisplayPresenter(IBleServiceDisplayView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
+        this.view = view;
+        this.bleService = bleService;
+        this.bluetoothStateObserver = bluetoothStateObserver;
+        this.bleService.registerBleServiceCallbacks(this);
+        this.bluetoothStateObserver.register(this);
     }
 
     /**
      * Parent - BluetoothServiceCallbacks (called from BleService)
      * Indicates that the mobile is disconnected from the Bluetooth Device. The Bluetooth Gatt connection is closed prior to invoking this callback.
+     *
+     * Send to View(BleServiceDisplayFragment)
      *
      * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
      * @param disconnectCode - The Disconnect code.
@@ -82,8 +94,10 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
      */
     @Override
     public void destroy() {
-        this.view = null;
         bleService.unregisterBleServiceCallbacks(this);
+        bluetoothStateObserver.unregister(this);
+        view = null;
+        bluetoothStateObserver = null;
     }
 
     /**

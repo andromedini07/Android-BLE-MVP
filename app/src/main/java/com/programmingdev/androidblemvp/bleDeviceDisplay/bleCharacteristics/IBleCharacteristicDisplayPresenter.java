@@ -3,15 +3,18 @@ import com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay;
 
 import java.util.List;
 
+/**
+ * The Blueprint of the Presenter used by BleCharacteristicDisplayPresenter to pass data to/from BleCharacteristicDisplayFragment and BleService
+ */
 public interface IBleCharacteristicDisplayPresenter {
-    public void destroy();
-    public void enableNotification(String deviceAddress, String serviceUUID, String characteristicUUID);
-    public void enableIndication(String deviceAddress, String serviceUUID, String characteristicUUID);
-    public void disableNotification(String deviceAddress,String serviceUUID, String characteristicUUID);
-    public void readData(String deviceAddress, String serviceUUID, String characteristicUUID);
-    public void readDescriptor(String deviceAddress,String serviceUUID, String characteristicUUID, String descriptorUUID);
-    public void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] data);
-    public void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] data, int characteristicWriteType);
-    public void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] data);
-    public void disableNotifications(String deviceAddress, String serviceUUID, List<BleCharacteristicsDisplay> characteristicsDisplayList);
+    void destroy();
+    void enableNotification(String deviceAddress, String serviceUUID, String characteristicUUID);
+    void enableIndication(String deviceAddress, String serviceUUID, String characteristicUUID);
+    void disableNotification(String deviceAddress,String serviceUUID, String characteristicUUID);
+    void readData(String deviceAddress, String serviceUUID, String characteristicUUID);
+    void readDescriptor(String deviceAddress,String serviceUUID, String characteristicUUID, String descriptorUUID);
+    void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] data);
+    void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] data, int characteristicWriteType);
+    void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] data);
+    void disableNotifications(String deviceAddress, String serviceUUID, List<BleCharacteristicsDisplay> characteristicsDisplayList);
 }

@@ -183,7 +183,7 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
      * Parent - IMainPresenter (called from MainActivity)
      * Connect to the Bluetooth Device.
      *
-     * @param deviceAddress
+     * @param deviceAddress - MAC Address of the Bluetooth Device
      */
     @Override
     public void connect(String deviceAddress) {

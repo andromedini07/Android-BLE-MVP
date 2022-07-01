@@ -2,10 +2,10 @@ package com.programmingdev.androidblemvp.dependencyService;
 
 import android.content.Context;
 
-import com.programmingdev.androidblemvp.bleDeviceDisplay.IBleCharacteristicDisplayFragmentPresenter;
-import com.programmingdev.androidblemvp.bleDeviceDisplay.IBleCharacteristicDisplayFragmentView;
-import com.programmingdev.androidblemvp.bleDeviceDisplay.IBleServiceDisplayFragmentPresenter;
-import com.programmingdev.androidblemvp.bleDeviceDisplay.IBleServiceDisplayFragmentView;
+import com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics.IBleCharacteristicDisplayFragmentPresenter;
+import com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics.IBleCharacteristicDisplayFragmentView;
+import com.programmingdev.androidblemvp.bleDeviceDisplay.bleService.IBleServiceDisplayFragmentPresenter;
+import com.programmingdev.androidblemvp.bleDeviceDisplay.bleService.IBleServiceDisplayFragmentView;
 import com.programmingdev.androidblemvp.main.IMainPresenter;
 import com.programmingdev.androidblemvp.main.IMainView;
 import com.programmingdev.androidblemvp.repository.IBleService;

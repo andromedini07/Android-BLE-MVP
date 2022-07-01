@@ -1,4 +1,4 @@
-package com.programmingdev.androidblemvp.bleDeviceDisplay;
+package com.programmingdev.androidblemvp.bleDeviceDisplay.bleService;
 
 import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
@@ -29,6 +29,9 @@ import com.programmingdev.androidblemvp.utils.console;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The BleServiceDisplayFragment displays the GATT Services for the selected Bluetooth Device
+ */
 public class BleServiceDisplayFragment extends Fragment implements IBleServiceDisplayFragmentView {
     private static final String TAG = "BleServiceDisplayFragment";
     private FragmentBleServiceDisplayBinding binding;

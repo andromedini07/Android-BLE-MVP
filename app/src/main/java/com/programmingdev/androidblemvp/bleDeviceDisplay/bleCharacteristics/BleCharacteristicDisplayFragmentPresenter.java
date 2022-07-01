@@ -1,4 +1,4 @@
-package com.programmingdev.androidblemvp.bleDeviceDisplay;
+package com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics;
 
 import com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay;
 import com.programmingdev.androidblemvp.repository.BleServiceCallbacks;

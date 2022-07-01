@@ -1,4 +1,4 @@
-package com.programmingdev.androidblemvp.bleDeviceDisplay;
+package com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics;
 
 public interface IBleCharacteristicDisplayFragmentView {
     public void onDeviceDisconnected(String deviceAddress, int code);

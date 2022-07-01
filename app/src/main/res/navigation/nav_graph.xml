@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/BleServiceDisplayFragment"
-        android:name="com.programmingdev.androidblemvp.bleDeviceDisplay.BleServiceDisplayFragment"
+        android:name="com.programmingdev.androidblemvp.bleDeviceDisplay.bleService.BleServiceDisplayFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_ble_service_display">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/bleCharacteristicDisplayFragment"
-        android:name="com.programmingdev.androidblemvp.bleDeviceDisplay.BleCharacteristicsDisplayFragment"
+        android:name="com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics.BleCharacteristicsDisplayFragment"
         android:label="@string/third_fragment_label"
         tools:layout="@layout/fragment_ble_characteristic_display"/>
 </navigation>

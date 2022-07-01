@@ -21,6 +21,14 @@ import com.programmingdev.androidblemvp.utils.console;
 
 import java.util.ArrayList;
 
+/**
+ * The BleDeviceActivity has 2 fragments -
+ * 1. BlServiceDisplayFragment
+ * 2. BleCharacteristicDisplayFragment
+ *
+ * Basically, this activity receives the selected device address and GATT services list from the
+ * previous activity (MainActivity) and forwards the same to to the BleServiceDisplay Fragment though an intent.
+ */
 public class BleDeviceActivity extends BaseActivity {
     private static final String TAG = "BleDeviceActivity";
 
@@ -35,8 +43,12 @@ public class BleDeviceActivity extends BaseActivity {
         binding = ActivityBleDeviceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         binding.toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,14 +60,11 @@ public class BleDeviceActivity extends BaseActivity {
         selectedDeviceAddress = getIntent().getStringExtra("SelectedDeviceAddress");
         serviceList = getIntent().getParcelableArrayListExtra("ServiceList");
 
-        for (BluetoothGattService service : serviceList) {
-            console.log(TAG, "service = " + service.getUuid());
-        }
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_ble_device);
         Bundle bundle = new Bundle();
         bundle.putString("SelectedDeviceAddress", selectedDeviceAddress);
         bundle.putParcelableArrayList("ServiceList", serviceList);
+        // Pass the selected parameters received from the previous activity to the BleServiceDisplayFragment
         navController.setGraph(R.navigation.nav_graph, bundle);
 //        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -66,16 +75,6 @@ public class BleDeviceActivity extends BaseActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_ble_device);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     public void setSubtitle(String subTitle) {

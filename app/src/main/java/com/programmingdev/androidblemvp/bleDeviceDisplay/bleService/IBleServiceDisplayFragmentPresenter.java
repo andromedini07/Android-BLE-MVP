@@ -1,4 +1,4 @@
-package com.programmingdev.androidblemvp.bleDeviceDisplay;
+package com.programmingdev.androidblemvp.bleDeviceDisplay.bleService;
 
 import android.bluetooth.BluetoothGattService;
 

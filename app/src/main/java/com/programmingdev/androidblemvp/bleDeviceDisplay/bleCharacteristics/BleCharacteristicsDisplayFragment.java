@@ -1,4 +1,4 @@
-package com.programmingdev.androidblemvp.bleDeviceDisplay;
+package com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,31 +9,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.programmingdev.androidblemvp.R;
 import com.programmingdev.androidblemvp.databinding.FragmentBleCharacteristicDisplayBinding;
 
-import android.os.Bundle;
-
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.programmingdev.androidblemvp.adapters.GattCharacteristicDisplayListAdapter;
 import com.programmingdev.androidblemvp.alertDialogFragments.DataConfigDialog;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
-import com.programmingdev.androidblemvp.databinding.FragmentBleCharacteristicDisplayBinding;
 
 import com.programmingdev.androidblemvp.dependencyService.DependencyService;
 import com.programmingdev.androidblemvp.dependencyService.IDependencyService;

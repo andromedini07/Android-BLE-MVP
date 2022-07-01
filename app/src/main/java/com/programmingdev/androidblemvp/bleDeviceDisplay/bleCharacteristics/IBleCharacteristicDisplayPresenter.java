@@ -3,7 +3,7 @@ import com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay;
 
 import java.util.List;
 
-public interface IBleCharacteristicDisplayFragmentPresenter {
+public interface IBleCharacteristicDisplayPresenter {
     public void destroy();
     public void enableNotification(String deviceAddress, String serviceUUID, String characteristicUUID);
     public void enableIndication(String deviceAddress, String serviceUUID, String characteristicUUID);

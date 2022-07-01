@@ -10,7 +10,7 @@ import com.programmingdev.blecommmodule.BluetoothDeviceWrapper;
 import java.util.List;
 
 /**
- * Component (implementation) of IMainPresenter interface. The presenter can be mocked during unit testing.
+ * Component (implementation) of IMainPresenter interface. The presenter can be mocked for unit testing.
  * The MainPresenter is the intermediate layer that passes information from the MainActivity (View) to the BleService (Repository).
  * Takes the input from the view and forwards the request to the BleService (A communication repository).
  * Also, the results from the BleService is forwarded to the View (MainActivity) for UI update.
@@ -136,6 +136,7 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
      */
     @Override
     public void onDeviceDisconnected(String deviceAddress, int disconnectCode) {
+        // Send to View (MainActivity)
         if (view != null) {
             view.onDeviceDisconnected(deviceAddress);
         }

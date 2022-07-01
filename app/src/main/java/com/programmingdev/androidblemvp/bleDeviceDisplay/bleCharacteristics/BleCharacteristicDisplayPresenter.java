@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class BleCharacteristicDisplayFragmentPresenter extends BleServiceCallbacks implements IBleCharacteristicDisplayFragmentPresenter {
+public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks implements IBleCharacteristicDisplayPresenter {
 
-    private IBleCharacteristicDisplayFragmentView view;
+    private IBleCharacteristicDisplayView view;
     private final IBleService bleService;
 
-    public BleCharacteristicDisplayFragmentPresenter(IBleCharacteristicDisplayFragmentView view, IBleService bleService) {
+    public BleCharacteristicDisplayPresenter(IBleCharacteristicDisplayView view, IBleService bleService) {
         this.view = view;
         this.bleService = bleService;
         this.bleService.registerBleServiceCallbacks(this);

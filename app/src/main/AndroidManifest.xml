@@ -12,8 +12,11 @@
         <activity
             android:name=".bleDeviceDisplay.BleDeviceActivity"
             android:label="@string/title_activity_ble_device"
-            android:theme="@style/Theme.AndroidBLEMVP.NoActionBar"></activity>
-        <activity android:name=".main.MainActivity">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AndroidBLEMVP.NoActionBar" />
+        <activity
+            android:name=".main.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

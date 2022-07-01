@@ -1,6 +1,6 @@
 package com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics;
 
-public interface IBleCharacteristicDisplayFragmentView {
+public interface IBleCharacteristicDisplayView {
     public void onDeviceDisconnected(String deviceAddress, int code);
     public void onNotificationEnabled(String deviceAddress, String serviceUUID, String characteristicUUID);
     public void onIndicationEnabled(String deviceAddress, String serviceUUID, String characteristicUUID);

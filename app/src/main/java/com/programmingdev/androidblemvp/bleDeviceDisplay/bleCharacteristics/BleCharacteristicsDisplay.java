@@ -27,7 +27,6 @@ import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
 
 import com.programmingdev.androidblemvp.dependencyService.DependencyService;
 import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
-import com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay;
 import com.programmingdev.androidblemvp.models.BleDescriptorDisplay;
 import com.programmingdev.androidblemvp.models.BleServicesDisplay;
 import com.programmingdev.androidblemvp.repository.IBleService;
@@ -36,13 +35,13 @@ import com.programmingdev.androidblemvp.utils.console;
 
 import java.util.List;
 
-public class BleCharacteristicsDisplayFragment extends Fragment implements IBleCharacteristicDisplayFragmentView {
+public class BleCharacteristicsDisplay extends Fragment implements IBleCharacteristicDisplayView {
     private static final String TAG = "BleCharacteristicsDisplayFragment";
     private FragmentBleCharacteristicDisplayBinding binding;
     private BleServicesDisplay selectedBleServicesDisplay;
     private GattCharacteristicDisplayListAdapter adapter;
     private BleDeviceActivity activity;
-    private IBleCharacteristicDisplayFragmentPresenter presenter;
+    private IBleCharacteristicDisplayPresenter presenter;
     private String selectedDeviceAddress;
 
     @Override
@@ -70,9 +69,9 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
             public void handleOnBackPressed() {
                 console.log(TAG, "onBackPressed");
                 // Handle the back button event
-                List<BleCharacteristicsDisplay> characteristicsDisplayList = adapter.getList();
+                List<com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay> characteristicsDisplayList = adapter.getList();
                 presenter.disableNotifications(selectedDeviceAddress, selectedBleServicesDisplay.uuid, characteristicsDisplayList);
-                NavHostFragment.findNavController(BleCharacteristicsDisplayFragment.this).popBackStack();
+                NavHostFragment.findNavController(BleCharacteristicsDisplay.this).popBackStack();
                 // navigateUp
             }
         };
@@ -112,7 +111,7 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
         //        ((SimpleItemAnimator) binding.recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         adapter.setOnItemClickListener(new GattCharacteristicDisplayListAdapter.OnItemClickListener() {
             @Override
-            public void onParentItemClicked(BleCharacteristicsDisplay characteristicsDisplay, int parentItemPosition, int code) {
+            public void onParentItemClicked(com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay characteristicsDisplay, int parentItemPosition, int code) {
                 console.log(TAG, "Parent Item Position = " + parentItemPosition + "Bluetooth Characteristic UUID = " + characteristicsDisplay.uuid);
                 switch (code) {
                     case 1:    // Read
@@ -162,7 +161,7 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
             }
 
             @Override
-            public void onChildItemClicked(BleDescriptorDisplay bleDescriptorDisplay, int childItemPosition, BleCharacteristicsDisplay bleCharacteristicsDisplay, int parentItemPosition, int code) {
+            public void onChildItemClicked(BleDescriptorDisplay bleDescriptorDisplay, int childItemPosition, com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay bleCharacteristicsDisplay, int parentItemPosition, int code) {
                 console.log(TAG, "Child Item Position = " + childItemPosition + "Bluetooth Descriptor UUID = " + bleDescriptorDisplay.uuid
                         + "Parent Item Position = " + parentItemPosition + "Bluetooth Characteristic UUID = " + bleCharacteristicsDisplay.uuid);
                 switch (code) {
@@ -181,7 +180,7 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     public void onStart() {
         super.onStart();
 
-        List<BleCharacteristicsDisplay> wrapperList = selectedBleServicesDisplay.characteristicsDisplayList;
+        List<com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay> wrapperList = selectedBleServicesDisplay.characteristicsDisplayList;
         if (wrapperList != null && !wrapperList.isEmpty()) {
             adapter.update(wrapperList);
             displayList();

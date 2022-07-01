@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The MainActivity is the component (implements) of IMainView interface. The View can be mocked during unit testing.
+ * The MainActivity is the component (implements) of IMainView interface. The View can be mocked for unit testing.
  * It is the entry page of the application that takes care of
  * 1. Scanning for Bluetooth Devices.
  * 2. Displaying found devices in RecyclerView and allowing the user to connect to a Bluetooth Device.
@@ -330,6 +330,7 @@ public class MainActivity extends BaseActivity implements IMainView, LocationAcc
         }
         if (selectedDevice != null) {
             if (!presenter.isDeviceConnectionInProgress()) {
+                // Some android phones do not disconnect from the peripheral when the Bluetooth is disabled
                 presenter.disconnect(selectedDevice.getDeviceAddress());
             }
         }

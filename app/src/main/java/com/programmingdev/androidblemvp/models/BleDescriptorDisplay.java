@@ -5,6 +5,10 @@ import android.bluetooth.BluetoothGattDescriptor;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Model - Displays UUID, Name, and Values (Read/Write)
+ * Easier to manage and manipulate item properties in the RecyclerView
+ */
 public class BleDescriptorDisplay implements Serializable {
 
     public String uuid;

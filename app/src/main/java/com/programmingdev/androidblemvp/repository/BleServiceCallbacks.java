@@ -7,6 +7,9 @@ import com.programmingdev.blecommmodule.BluetoothDeviceWrapper;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Callbacks fired on BLE communication events
+ */
 public abstract class BleServiceCallbacks {
   public void onDeviceScanStarted(){}
   public void onDeviceScanStopped(){}

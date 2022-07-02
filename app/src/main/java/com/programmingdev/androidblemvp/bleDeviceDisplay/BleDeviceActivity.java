@@ -33,14 +33,11 @@ public class BleDeviceActivity extends BaseActivity {
     private static final String TAG = "BleDeviceActivity";
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityBleDeviceBinding binding;
-    private String selectedDeviceAddress;
-    private ArrayList<BluetoothGattService> serviceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityBleDeviceBinding.inflate(getLayoutInflater());
+        ActivityBleDeviceBinding binding = ActivityBleDeviceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 
@@ -57,8 +54,8 @@ public class BleDeviceActivity extends BaseActivity {
             }
         });
 
-        selectedDeviceAddress = getIntent().getStringExtra("SelectedDeviceAddress");
-        serviceList = getIntent().getParcelableArrayListExtra("ServiceList");
+        String selectedDeviceAddress = getIntent().getStringExtra("SelectedDeviceAddress");
+        ArrayList<BluetoothGattService> serviceList = getIntent().getParcelableArrayListExtra("ServiceList");
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_ble_device);
         Bundle bundle = new Bundle();

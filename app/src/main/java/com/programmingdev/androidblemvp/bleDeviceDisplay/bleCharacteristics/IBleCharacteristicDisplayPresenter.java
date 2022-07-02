@@ -7,7 +7,6 @@ import java.util.List;
  * The Blueprint of the Presenter used by BleCharacteristicDisplayPresenter to pass data to/from BleCharacteristicDisplayFragment and BleService
  */
 public interface IBleCharacteristicDisplayPresenter {
-    void destroy();
     void enableNotification(String deviceAddress, String serviceUUID, String characteristicUUID);
     void enableIndication(String deviceAddress, String serviceUUID, String characteristicUUID);
     void disableNotification(String deviceAddress,String serviceUUID, String characteristicUUID);
@@ -17,4 +16,6 @@ public interface IBleCharacteristicDisplayPresenter {
     void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] data, int characteristicWriteType);
     void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] data);
     void disableNotifications(String deviceAddress, String serviceUUID, List<BleCharacteristicsDisplay> characteristicsDisplayList);
+    void disconnectFromPeripheral(String deviceAddress);
+    void destroy();
 }

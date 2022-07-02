@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/bleCharacteristicDisplayFragment"
-        android:name="com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics.BleCharacteristicsDisplay"
+        android:name="com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics.BleCharacteristicsDisplayFragment"
         android:label="@string/third_fragment_label"
         tools:layout="@layout/fragment_ble_characteristic_display"/>
 </navigation>

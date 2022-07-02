@@ -11,13 +11,11 @@ public interface IBleCharacteristicDisplayView {
     void onNotificationEnablingFailed(String deviceAddress, String serviceUUID, String characteristicUUID);
     void onIndicationEnablingFailed(String deviceAddress, String serviceUUID, String characteristicUUID);
     void onCharacteristicUpdate(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] data);
-    void onCharacteristicWrite(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] data);
     void onCharacteristicWriteFailed(String deviceAddress, String serviceUUID, String characteristicUUID, byte[] lastSentData, int errorCode);
     void onCharacteristicReadFailed(String deviceAddress, String serviceUUID, String characteristicUUID, int errorCode);
     void onDescriptorUpdate(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] data);
-    void onDescriptorUpdateFailed(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, int errorCode);
-    void onDescriptorWrite(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] data);
+    void onDescriptorReadFailed(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, int errorCode);
     void onDescriptorWriteFailed(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] lastSentData, int errorCode);
     void onDisablingNotificationFailed(String deviceAddress, String serviceUUID, String characteristicUUID);
-    void onNotificationsDisabled(String deviceAddress, String serviceUUID);
+    void onBluetoothDisabled();
 }

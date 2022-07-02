@@ -5,6 +5,12 @@ import com.programmingdev.blecommmodule.BluetoothDeviceWrapper;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The Blueprint of the BLE Services that handles
+ * 1. Scanning for the Bluetooth Devices.
+ * 2. Connecting with the Bluetooth Device.
+ * 3. Communicating with the Bluetooth Device.
+ */
 public interface IBleService {
     // Scanning Devices
     void startDeviceScan();

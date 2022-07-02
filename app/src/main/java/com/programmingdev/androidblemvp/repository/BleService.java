@@ -19,6 +19,20 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
+/**
+ * The BleService is the component (implementation) of the IBleService that is responsible for communicating with the Bluetooth Device and
+ * delivers the result to the presenter via callbacks.
+ *
+ * The IBleCentralManager is the blueprint of the Central Manager that takes care of connecting and communicating with the Bluetooth Device.
+ * However, the implementation of this is a closed source.
+ *
+ * The IBleScanner is the blueprint of the BLE Scanner that takes care of scanning for Bluetooth Devices.
+ * However, the implementation of this is the closed source.
+ *
+ * Presenter --> BleService[IBleService] --> [IBleCentralManager,IBleScanner]
+ * Presenter[BleServiceCallbacks] <-- BleService[BleCentralManagerCallbacks, BleScannerCallbacks] <-- [BleCentralManager,BleScanner]
+ *
+ */
 public class BleService extends BleCentralManagerCallbacks implements IBleService, BleScannerCallback {
 
     private static final String TAG = "BleService";
@@ -26,13 +40,11 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
     private static BleService instance;
     private final IBleCentralManager bleCentralManager;
     private final IBleScanner bleScanner;
-    private final Context context;
     private final List<BleServiceCallbacks> callbacksList;
     private Queue<UUID> characteristicUuidQueue;
     private boolean allNotificationsDisableInProgress;
 
     private BleService(Context context) {
-        this.context = context.getApplicationContext();
         bleScanner = BleScannerFactory.provideInstance(context, BleScanner.class);
         bleCentralManager = BleCentralManagerFactory.provideInstance(context);
         callbacksList = new ArrayList<>();

@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Model - Displays UUID, Name, and characteristics
+ * Easier to manage and manipulate item properties in the RecyclerView
+ */
 public class BleServicesDisplay implements Serializable {
     public String uuid;
     public String name;

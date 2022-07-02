@@ -43,7 +43,7 @@ import java.util.List;
  * 1. The BleServiceDisplayPresenter receives the device's disconnect event from the BleServiceCallbacks
  * and forwards the event to the BleServiceDisplayFragment
  * 2. The BleServicesDisplay model consists of service name, uuid and characteristics list as String properties that can be easily
- * added to the RecyclerView Adapter to diaplay the list
+ * added to the RecyclerView Adapter to display the list
  */
 public class BleServiceDisplayFragment extends Fragment implements IBleServiceDisplayView {
     private static final String TAG = "BleServiceDisplayFragment";
@@ -71,7 +71,7 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
             serviceList = bundle.getParcelableArrayList("ServiceList");
         }
 
-        // This callback will only be called when BleDisplayFragment is at least Started.
+        // This callback will only be called when the BleServiceDisplayFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
@@ -158,8 +158,8 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
         presenter.destroy();
+        binding = null;
         presenter = null;
     }
 

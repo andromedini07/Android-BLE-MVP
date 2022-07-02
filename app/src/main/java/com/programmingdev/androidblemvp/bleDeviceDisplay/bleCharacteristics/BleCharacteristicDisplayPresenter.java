@@ -201,6 +201,15 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
     }
 
     /**
+     * Parent - IBleServiceDisplayFragmentPresenter (called from BleServiceDisplayFragment)
+     * Disconnect from the peripheral
+     */
+    @Override
+    public void disconnectFromPeripheral(String deviceAddress) {
+        bleService.disconnect(deviceAddress);
+    }
+
+    /**
      * Parent - IBleCharacteristicDisplayPresenter (called from BleCharacteristicDisplayFragment)
      * Destroys and release all resources when BleCharacteristicDisplayFragment is not visible/destroyed.
      * Unregisters callbacks from BleService.
@@ -231,13 +240,35 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Bluetooth GATT characteristic is written with data
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param data - The data written to the Bluetooth GATT Characteristic
+     */
     @Override
     public void onCharacteristicWrite(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, byte[] data) {
         if (view != null) {
-            view.onCharacteristicWrite(deviceAddress, serviceUUID.toString(), characteristicUUID.toString(), data);
+
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Bluetooth GATT characteristic has been updated/read with data
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param data - The data updated in the Bluetooth GATT Characteristic
+     */
     @Override
     public void onCharacteristicUpdate(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, byte[] data) {
         if (view != null) {
@@ -245,6 +276,18 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that writing data to the Bluetooth GATT characteristic has failed
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param lastSentData - The data written to the Bluetooth GATT Characteristic
+     * @param errorCode - GATT Error code
+     */
     @Override
     public void onCharacteristicWriteFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, byte[] lastSentData, int errorCode) {
         if (view != null) {
@@ -252,6 +295,17 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that reading data from the Bluetooth GATT characteristic has failed
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param errorCode - GATT Error code
+     */
     @Override
     public void onCharacteristicReadFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, int errorCode) {
         if (view != null) {
@@ -259,13 +313,37 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Bluetooth GATT descriptor is written with data
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param descriptorUUID - Bluetooth GATT descriptor UUID.
+     * @param data - The data written to the Bluetooth GATT Descriptor.
+     */
     @Override
     public void onDescriptorWrite(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, UUID descriptorUUID, byte[] data) {
         if (view != null) {
-            view.onDescriptorWrite(deviceAddress, serviceUUID.toString(), characteristicUUID.toString(), descriptorUUID.toString(), data);
+
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Bluetooth GATT descriptor is updated with data when a descriptor is read
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param descriptorUUID - Bluetooth GATT descriptor UUID.
+     * @param data - The updated data from the Bluetooth GATT Descriptor.
+     */
     @Override
     public void onDescriptorUpdate(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, UUID descriptorUUID, byte[] data) {
         if (view != null) {
@@ -273,13 +351,37 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that reading data from the Bluetooth GATT descriptor has failed
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param descriptorUUID - Bluetooth GATT descriptor UUID.
+     * @param errorCode - GATT Error code
+     */
     @Override
     public void onDescriptorReadFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, UUID descriptorUUID, int errorCode) {
         if (view != null) {
-            view.onDescriptorUpdateFailed(deviceAddress, serviceUUID.toString(), characteristicUUID.toString(), descriptorUUID.toString(), errorCode);
+            view.onDescriptorReadFailed(deviceAddress, serviceUUID.toString(), characteristicUUID.toString(), descriptorUUID.toString(), errorCode);
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that writing data to the Bluetooth GATT descriptor has failed
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     * @param descriptorUUID - Bluetooth GATT descriptor UUID.
+     * @param errorCode - GATT Error code
+     */
     @Override
     public void onDescriptorWriteFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID, UUID descriptorUUID, byte[] data, int errorCode) {
         if (view != null) {
@@ -287,6 +389,16 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Characteristic Notification is enabled
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onNotificationEnabled(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         super.onNotificationEnabled(deviceAddress, serviceUUID, characteristicUUID);
@@ -295,6 +407,16 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Characteristic Indication is enabled
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onIndicationEnabled(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         if (view != null) {
@@ -302,6 +424,16 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Characteristic Notification/Indication is disabled
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onNotificationDisabled(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         if (view != null) {
@@ -309,6 +441,15 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the discovering GATT services has failed
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param code - GATT Failure code
+     */
     @Override
     public void onServiceDiscoveryFailed(String deviceAddress, int code) {
         super.onServiceDiscoveryFailed(deviceAddress, code);
@@ -317,6 +458,16 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Notification for a characteristic is not supported
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onNotificationNotSupported(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         if (view != null) {
@@ -324,12 +475,32 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the Indication for a characteristic is not supported
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onIndicationNotSupported(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         if (view != null) {
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that enabling the characteristic notification has failed may be due to unknown error
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onEnablingNotificationFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         if (view != null) {
@@ -337,6 +508,16 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that enabling the characteristic indication has failed may be due to unknown error
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onEnablingIndicationFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         if (view != null) {
@@ -344,6 +525,16 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that disabling the characteristic notification/indication has failed may be due to unknown error
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     * @param characteristicUUID - Bluetooth GATT Characteristic UUID.
+     */
     @Override
     public void onDisablingNotificationFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID) {
         if (view != null) {
@@ -351,20 +542,42 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
     }
 
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that notifications/indications for the characteristics belonging to a service are disabled.
+     *
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param serviceUUID - Bluetooth GATT Service UUID.
+     */
     @Override
     public void onNotificationsDisabled(String deviceAddress, UUID serviceUUID) {
         if (view != null) {
-            view.onNotificationsDisabled(deviceAddress, serviceUUID.toString());
+
         }
     }
 
+    /**
+     * Parent - IBluetoothStateObserver.IBluetoothStateObserverCallbacks
+     * Indicates the Bluetooth has been enabled by the user.
+     */
     @Override
     public void onBluetoothEnabled() {
+       if(view!=null){
 
+       }
     }
 
+    /**
+     * Parent - IBluetoothStateObserver.IBluetoothStateObserverCallbacks
+     * Indicates the Bluetooth has been disabled by the user.
+     * Send to View (BleCharacteristicDisplayFragment).
+     */
     @Override
     public void onBluetoothDisabled() {
-
+        if(view!=null){
+            view.onBluetoothDisabled();
+        }
     }
 }

@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Model - Displays UUID, Name, Values (Read/Write), Properties, Descriptors, and Notification/Indication enable flag
+ * Easier to manage and manipulate item properties in the RecyclerView
+ */
 public class BleCharacteristicsDisplay implements Serializable {
     public String uuid;
     public String name;

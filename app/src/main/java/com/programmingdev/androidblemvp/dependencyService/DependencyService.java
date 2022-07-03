@@ -15,7 +15,7 @@ import com.programmingdev.androidblemvp.main.MainPresenter;
 import com.programmingdev.androidblemvp.repository.BleService;
 import com.programmingdev.androidblemvp.repository.IBleService;
 
-public class DependencyService implements IDependencyService{
+public final class DependencyService implements IDependencyService{
 
     @Override
     public IBleService provideBLEService(Context context) {

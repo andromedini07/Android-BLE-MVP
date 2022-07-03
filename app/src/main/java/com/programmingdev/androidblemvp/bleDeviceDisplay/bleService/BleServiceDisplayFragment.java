@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.programmingdev.androidblemvp.MyApplication;
 import com.programmingdev.androidblemvp.R;
 import com.programmingdev.androidblemvp.adapters.GattServiceListAdapter;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
@@ -104,7 +105,8 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
         }
 
         // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
-        IDependencyService dependencyService = new DependencyService();
+        assert bleDeviceActivity != null;
+        IDependencyService dependencyService = ((MyApplication) bleDeviceActivity.getApplication()).dependencyService;
         IBleService bleService = dependencyService.provideBLEService(getContext());
         presenter = dependencyService.providePresenter(this, bleService);
 

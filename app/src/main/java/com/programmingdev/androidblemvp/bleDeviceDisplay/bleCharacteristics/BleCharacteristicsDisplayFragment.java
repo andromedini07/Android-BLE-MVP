@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.programmingdev.androidblemvp.MyApplication;
 import com.programmingdev.androidblemvp.databinding.FragmentBleCharacteristicDisplayBinding;
 
 import androidx.activity.OnBackPressedCallback;
@@ -127,7 +128,8 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
         }
 
         // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
-        IDependencyService dependencyService = new DependencyService();
+        assert activity != null;
+        IDependencyService dependencyService = ((MyApplication)activity.getApplication()).dependencyService;
         IBleService bleService = dependencyService.provideBLEService(getContext());
         presenter = dependencyService.providePresenter(this, bleService);
 

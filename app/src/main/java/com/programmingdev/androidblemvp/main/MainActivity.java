@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
+import com.programmingdev.androidblemvp.MyApplication;
 import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
 import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.androidblemvp.utils.BaseActivity;
@@ -121,7 +122,7 @@ public class MainActivity extends BaseActivity implements IMainView, LocationAcc
         super.onStart();
         locationAccessPermissionCallback = this;
 
-        IDependencyService dependencyService = new DependencyService();
+        IDependencyService dependencyService = ((MyApplication) getApplication()).dependencyService;
         IBleService bleService = dependencyService.provideBLEService(getApplicationContext());
         IBluetoothStateObserver bluetoothStateObserver = new BluetoothStateObserver(getApplicationContext());
         presenter = dependencyService.providePresenter(this, bleService, bluetoothStateObserver);

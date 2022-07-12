@@ -49,7 +49,7 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
     /**
      * Parent - BluetoothServiceCallbacks (called from BleService)
      * Indicates that the mobile is disconnected from the Bluetooth Device. The Bluetooth Gatt connection is closed prior to invoking this callback.
-     *
+     * <p>
      * Send to View(BleServiceDisplayFragment)
      *
      * @param deviceAddress  - The MAC Address of the Bluetooth Device the mobile is disconnected from.
@@ -94,8 +94,14 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
      */
     @Override
     public void destroy() {
-        bleService.unregisterBleServiceCallbacks(this);
-        bluetoothStateObserver.unregister(this);
+        if (bleService != null) {
+            bleService.unregisterBleServiceCallbacks(this);
+        }
+
+        if (bluetoothStateObserver != null) {
+            bluetoothStateObserver.unregister(this);
+        }
+
         view = null;
         bluetoothStateObserver = null;
     }

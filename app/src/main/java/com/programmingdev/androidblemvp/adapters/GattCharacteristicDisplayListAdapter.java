@@ -143,6 +143,12 @@ public class GattCharacteristicDisplayListAdapter extends RecyclerView.Adapter<G
             }
         }
 
+        if (characteristicsDisplay.isExpanded) {
+            holder.layoutExpandView.setVisibility(View.VISIBLE);
+        } else {
+            holder.layoutExpandView.setVisibility(View.GONE);
+        }
+
         // Child Items
         holder.recyclerView.setHasFixedSize(true);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
@@ -180,10 +186,11 @@ public class GattCharacteristicDisplayListAdapter extends RecyclerView.Adapter<G
     }
 
     public void update(String characteristicUUID, byte[] data) {
-        for (BleCharacteristicsDisplay characteristicsDisplay : bleCharacteristicsDisplayList) {
+        for (int i = 0; i < bleCharacteristicsDisplayList.size(); i++) {
+            BleCharacteristicsDisplay characteristicsDisplay = bleCharacteristicsDisplayList.get(i);
             if (characteristicsDisplay.uuid.equalsIgnoreCase(characteristicUUID)) {
                 characteristicsDisplay.valueDisplay = data;
-                notifyDataSetChanged();
+                notifyItemChanged(i);
                 break;
             }
         }
@@ -194,9 +201,10 @@ public class GattCharacteristicDisplayListAdapter extends RecyclerView.Adapter<G
             BleCharacteristicsDisplay characteristicsDisplay = bleCharacteristicsDisplayList.get(i);
             if (characteristicsDisplay.uuid.equalsIgnoreCase(characteristicUUID)) {
                 GattDescriptorDisplayListAdapter adapter = childAdapters.get(i);
+                int finalI = i;
                 new Handler(Looper.getMainLooper()).post(() -> {
                     adapter.update(descriptorUUID, data);
-                    notifyDataSetChanged();
+                    notifyItemChanged(finalI);
                 });
                 break;
             }
@@ -204,16 +212,17 @@ public class GattCharacteristicDisplayListAdapter extends RecyclerView.Adapter<G
     }
 
     public void update(String characteristicUUID, boolean enabled) {
-        for (BleCharacteristicsDisplay characteristicsDisplay : bleCharacteristicsDisplayList) {
+        for (int i = 0; i < bleCharacteristicsDisplayList.size(); i++) {
+            BleCharacteristicsDisplay characteristicsDisplay = bleCharacteristicsDisplayList.get(i);
             if (characteristicsDisplay.uuid.equalsIgnoreCase(characteristicUUID)) {
                 characteristicsDisplay.isNotificationEnabled = enabled;
-                notifyDataSetChanged();
+                notifyItemChanged(i);
                 break;
             }
         }
     }
 
-    public List<BleCharacteristicsDisplay> getList(){
+    public List<BleCharacteristicsDisplay> getList() {
         return this.bleCharacteristicsDisplayList;
     }
 
@@ -254,21 +263,23 @@ public class GattCharacteristicDisplayListAdapter extends RecyclerView.Adapter<G
                     BleCharacteristicsDisplay bleCharacteristicsDisplay = bleCharacteristicsDisplayList.get(getAdapterPosition());
                     List<BleDescriptorDisplay> bleDescriptorDisplays = bleCharacteristicsDisplay.descriptorDisplayList;
                     if (bleDescriptorDisplays != null && !bleDescriptorDisplays.isEmpty()) {
-                        if (!layoutExpandView.isShown()) {
-//                            layoutExpandView.measure(
-//                                    View.MeasureSpec.makeMeasureSpec(((View) layoutExpandView.getParent()).getWidth(), View.MeasureSpec.EXACTLY),
-//                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-//                            );
-
-//                            layoutExpandView.measure(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-
-//                            int height = layoutExpandView.getMeasuredHeight();
-//                            expand(layoutExpandView, 200, height);
-                            expand(layoutExpandView);
-                        } else {
-                            collapse(layoutExpandView);
-//                            collapse(layoutExpandView, 200, 0);
-                        }
+//                        if (!layoutExpandView.isShown()) {
+////                            layoutExpandView.measure(
+////                                    View.MeasureSpec.makeMeasureSpec(((View) layoutExpandView.getParent()).getWidth(), View.MeasureSpec.EXACTLY),
+////                                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+////                            );
+//
+////                            layoutExpandView.measure(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+//
+////                            int height = layoutExpandView.getMeasuredHeight();
+////                            expand(layoutExpandView, 200, height);
+//                            expand(layoutExpandView);
+//                        } else {
+//                            collapse(layoutExpandView);
+////                            collapse(layoutExpandView, 200, 0);
+//                        }
+                        bleCharacteristicsDisplay.isExpanded = !bleCharacteristicsDisplay.isExpanded;
+                        notifyItemChanged(getAdapterPosition());
                     }
                 }
             });

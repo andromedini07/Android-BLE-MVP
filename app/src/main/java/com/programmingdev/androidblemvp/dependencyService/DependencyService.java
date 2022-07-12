@@ -15,7 +15,7 @@ import com.programmingdev.androidblemvp.main.MainPresenter;
 import com.programmingdev.androidblemvp.repository.BleService;
 import com.programmingdev.androidblemvp.repository.IBleService;
 
-public final class DependencyService implements IDependencyService{
+public final class DependencyService implements IDependencyService {
 
     @Override
     public IBleService provideBLEService(Context context) {
@@ -24,21 +24,31 @@ public final class DependencyService implements IDependencyService{
 
     @Override
     public IMainPresenter providePresenter(IMainView view, IBleService bleService) {
-        return new MainPresenter(view,bleService);
+        return new MainPresenter(view, bleService);
     }
 
     @Override
     public IMainPresenter providePresenter(IMainView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
-        return new MainPresenter(view,bleService,bluetoothStateObserver);
+        return new MainPresenter(view, bleService, bluetoothStateObserver);
     }
 
     @Override
     public IBleServiceDisplayPresenter providePresenter(IBleServiceDisplayView view, IBleService bleService) {
-        return new BleServiceDisplayPresenter(view,bleService);
+        return new BleServiceDisplayPresenter(view, bleService);
+    }
+
+    @Override
+    public IBleServiceDisplayPresenter providePresenter(IBleServiceDisplayView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
+        return new BleServiceDisplayPresenter(view, bleService, bluetoothStateObserver);
     }
 
     @Override
     public IBleCharacteristicDisplayPresenter providePresenter(IBleCharacteristicDisplayView view, IBleService bleService) {
-        return new BleCharacteristicDisplayPresenter(view,bleService);
+        return new BleCharacteristicDisplayPresenter(view, bleService);
+    }
+
+    @Override
+    public IBleCharacteristicDisplayPresenter providePresenter(IBleCharacteristicDisplayView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
+        return new BleCharacteristicDisplayPresenter(view, bleService, bluetoothStateObserver);
     }
 }

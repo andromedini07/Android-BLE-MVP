@@ -38,7 +38,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/buttonConnect"
-            android:backgroundTint="#37474F"
+            android:backgroundTint="#c21858"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Connect"

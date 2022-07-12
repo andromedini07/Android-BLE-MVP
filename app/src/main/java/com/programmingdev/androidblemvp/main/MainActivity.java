@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.bluetooth.BluetoothGattService;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.programmingdev.androidblemvp.MyApplication;
+import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
 import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
 import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.androidblemvp.utils.BaseActivity;
@@ -143,11 +145,11 @@ public class MainActivity extends BaseActivity implements IMainView, LocationAcc
             presenter.stopDeviceScan();
         }
 
-        if (selectedDevice != null) {
-            if (!presenter.isDeviceConnectionInProgress()) {
-                presenter.disconnect(selectedDevice.getDeviceAddress());
-            }
-        }
+//        if (selectedDevice != null) {
+//            if (!presenter.isDeviceConnectionInProgress()) {
+//                presenter.disconnect(selectedDevice.getDeviceAddress());
+//            }
+//        }
 
         presenter.destroy();
         presenter = null;
@@ -294,8 +296,13 @@ public class MainActivity extends BaseActivity implements IMainView, LocationAcc
     public void onDeviceConnectedAndReadyToCommunicate(String deviceAddress, List<BluetoothGattService> serviceList) {
         hideProgressDialog();
 
-        // Todo Navigate to the next activity by passing SelectedDeviceAddress and serviceArrayList through an Intent
+        // Pass selected device's MAC address and its services list to the next activity (BleDeviceActivity).
+        // Navigate to the next activity by passing SelectedDeviceAddress and serviceArrayList through an Intent.
         ArrayList<BluetoothGattService> serviceArrayList = new ArrayList<>(serviceList);
+        Intent intent = new Intent(getApplicationContext(), BleDeviceActivity.class);
+        intent.putExtra("SelectedDeviceAddress", deviceAddress);
+        intent.putParcelableArrayListExtra("ServiceList", serviceArrayList);
+        startActivity(intent);
     }
 
     /**

@@ -21,6 +21,7 @@ public class BleCharacteristicsDisplay implements Serializable {
     public List<Property> properties;
     public List<BleDescriptorDisplay> descriptorDisplayList;
     public boolean isNotificationEnabled;
+    public boolean isExpanded;
 
     public BleCharacteristicsDisplay(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
         this.uuid = bluetoothGattCharacteristic.getUuid().toString();

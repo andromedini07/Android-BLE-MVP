@@ -32,6 +32,8 @@ import com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay;
 import com.programmingdev.androidblemvp.models.BleDescriptorDisplay;
 import com.programmingdev.androidblemvp.models.BleServicesDisplay;
 import com.programmingdev.androidblemvp.repository.IBleService;
+import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
+import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.androidblemvp.utils.ByteUtils;
 import com.programmingdev.androidblemvp.utils.console;
 
@@ -53,7 +55,7 @@ import java.util.List;
  * 2. The BleCharacteristicDisplay and BleDescriptorDisplay model consists of characteristic name, characteristic uuid,
  * descriptor name and descriptor uuid as String properties that can be easily
  * added to the RecyclerView Adapter to display the list
- *
+ * <p>
  * The Characteristics and Descriptors list are displayed in this format
  * Characteristic-1
  * Descriptor1-1
@@ -119,6 +121,13 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
+        assert activity != null;
+        IDependencyService dependencyService = ((MyApplication) activity.getApplication()).dependencyService;
+        IBleService bleService = dependencyService.provideBLEService(getContext());
+        IBluetoothStateObserver bluetoothStateObserver = new BluetoothStateObserver(getContext());
+        presenter = dependencyService.providePresenter(this, bleService, bluetoothStateObserver);
+
         // Set the title and subtitle
         // Title - "Bluetooth GATT Characteristic"
         // SubTitle - UUID of the selected GATT Service
@@ -126,12 +135,6 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
             activity.setTitle("Bluetooth GATT Characteristics");
             activity.setSubtitle(selectedBleServicesDisplay.uuid);
         }
-
-        // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
-        assert activity != null;
-        IDependencyService dependencyService = ((MyApplication)activity.getApplication()).dependencyService;
-        IBleService bleService = dependencyService.provideBLEService(getContext());
-        presenter = dependencyService.providePresenter(this, bleService);
 
         // Set the properties of RecyclerView
         binding.recyclerView.setHasFixedSize(true);
@@ -205,15 +208,41 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
 
             // Callback fired when user clicks on the descriptor
             @Override
-            public void onChildItemClicked(BleDescriptorDisplay bleDescriptorDisplay, int childItemPosition, com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay bleCharacteristicsDisplay, int parentItemPosition, int code) {
-                console.log(TAG, "Child Item Position = " + childItemPosition + "Bluetooth Descriptor UUID = " + bleDescriptorDisplay.uuid
-                        + "Parent Item Position = " + parentItemPosition + "Bluetooth Characteristic UUID = " + bleCharacteristicsDisplay.uuid);
+            public void onChildItemClicked(BleDescriptorDisplay descriptorDisplay, int childItemPosition,
+                                           BleCharacteristicsDisplay characteristicsDisplay, int parentItemPosition, int code) {
+                console.log(TAG, "Child Item Position = " + childItemPosition + "Bluetooth Descriptor UUID = " + descriptorDisplay.uuid
+                        + "Parent Item Position = " + parentItemPosition + "Bluetooth Characteristic UUID = " + characteristicsDisplay.uuid);
                 switch (code) {
                     case 1: // Read
                         presenter.readDescriptor(selectedDeviceAddress, selectedBleServicesDisplay.uuid,
-                                bleCharacteristicsDisplay.uuid, bleDescriptorDisplay.uuid);
+                                characteristicsDisplay.uuid, descriptorDisplay.uuid);
                         break;
                     case 2: // Write
+                        // Show DataConfigDialog to the user to enter data
+                        DataConfigDialog dialogFragment = new DataConfigDialog();
+                        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+                        Fragment prev = activity.getSupportFragmentManager().findFragmentByTag("dialog");
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+                        ft.addToBackStack(null);
+                        dialogFragment.show(activity.getSupportFragmentManager(), "dialog");
+                        dialogFragment.setDialogListener(new DataConfigDialog.DialogListener() {
+                            @Override
+                            public void onPositiveButtonClicked(byte[] inputData, boolean dialogCancelFlag) {
+                                if (inputData != null) {
+                                    // Write Data to the Characteristic
+                                    presenter.writeData(selectedDeviceAddress, selectedBleServicesDisplay.uuid, characteristicsDisplay.uuid,
+                                            descriptorDisplay.uuid, inputData);
+                                    adapter.update(characteristicsDisplay.uuid, descriptorDisplay.uuid, inputData);
+                                }
+                            }
+
+                            @Override
+                            public void onNegativeButtonClicked(String inputText, boolean dialogCancelFlag) {
+                                // Nothing
+                            }
+                        });
                         break;
                 }
             }
@@ -421,7 +450,7 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
      * @param deviceAddress      - The MAC Address of the Bluetooth Device the mobile is disconnected from.
      * @param serviceUUID        - UUID of GATT Service in String format.
      * @param characteristicUUID - UUID of GATT Characteristic in String format.
-     * @param descriptorUUID - UUID of GATT Descriptor in String format.
+     * @param descriptorUUID     - UUID of GATT Descriptor in String format.
      */
     @Override
     public void onDescriptorUpdate(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] data) {
@@ -439,12 +468,12 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
      * @param deviceAddress      - The MAC Address of the Bluetooth Device the mobile is disconnected from.
      * @param serviceUUID        - UUID of GATT Service in String format.
      * @param characteristicUUID - UUID of GATT Characteristic in String format.
-     * @param descriptorUUID - UUID of GATT Descriptor in String format.
+     * @param descriptorUUID     - UUID of GATT Descriptor in String format.
      */
     @Override
     public void onDescriptorReadFailed(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, int errorCode) {
-        console.log(TAG,"OnDescriptorReadFailed = "+ deviceAddress +" Service UUID = "+serviceUUID + " CharacteristicUUID = "+
-                characteristicUUID + "DescriptorUUID = "+descriptorUUID + "Error Code = "+errorCode);
+        console.log(TAG, "OnDescriptorReadFailed = " + deviceAddress + " Service UUID = " + serviceUUID + " CharacteristicUUID = " +
+                characteristicUUID + "DescriptorUUID = " + descriptorUUID + "Error Code = " + errorCode);
         Toast.makeText(getContext(), "Descriptor Read Failed", Toast.LENGTH_SHORT).show();
     }
 
@@ -458,13 +487,13 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
      * @param deviceAddress      - The MAC Address of the Bluetooth Device the mobile is disconnected from.
      * @param serviceUUID        - UUID of GATT Service in String format.
      * @param characteristicUUID - UUID of GATT Characteristic in String format.
-     * @param descriptorUUID - UUID of GATT Descriptor in String format.
+     * @param descriptorUUID     - UUID of GATT Descriptor in String format.
      */
     @Override
     public void onDescriptorWriteFailed(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] lastSentData, int errorCode) {
-        console.log(TAG,"OnDescriptorWriteFailed = "+ deviceAddress + " ServiceUUID = "+serviceUUID +" Characteristic UUID = "
-                +characteristicUUID +" Descriptor UUID = "+descriptorUUID +" Last Sent Data = "+
-                ByteUtils.getHexStringFromByteArray(lastSentData,false)+ " Error Code = "+errorCode);
+        console.log(TAG, "OnDescriptorWriteFailed = " + deviceAddress + " ServiceUUID = " + serviceUUID + " Characteristic UUID = "
+                + characteristicUUID + " Descriptor UUID = " + descriptorUUID + " Last Sent Data = " +
+                ByteUtils.getHexStringFromByteArray(lastSentData, false) + " Error Code = " + errorCode);
         Toast.makeText(getContext(), "Descriptor Write Failed", Toast.LENGTH_SHORT).show();
     }
 
@@ -481,8 +510,8 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
      */
     @Override
     public void onDisablingNotificationFailed(String deviceAddress, String serviceUUID, String characteristicUUID) {
-       console.log(TAG,"Disabling Notification Failed = "+ deviceAddress +" Service UUID = "+serviceUUID +" CharacteristicUUID = "+ characteristicUUID);
-       Toast.makeText(getContext(),"Disabling Notification Failed",Toast.LENGTH_SHORT).show();
+        console.log(TAG, "Disabling Notification Failed = " + deviceAddress + " Service UUID = " + serviceUUID + " CharacteristicUUID = " + characteristicUUID);
+        Toast.makeText(getContext(), "Disabling Notification Failed", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -504,6 +533,7 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     }
 
 //--------------------Private Functions-----------------------------------------------------------------------
+
     /**
      * Method to show the recyclerView when at least one BleServicesDisplay object is added into the RecyclerView
      */

@@ -25,6 +25,8 @@ import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
 import com.programmingdev.androidblemvp.models.BleServicesDisplay;
 import com.programmingdev.androidblemvp.repository.IBleService;
 import com.programmingdev.androidblemvp.databinding.FragmentBleServiceDisplayBinding;
+import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
+import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.androidblemvp.utils.console;
 
 import java.util.ArrayList;
@@ -96,6 +98,13 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
+        assert bleDeviceActivity != null;
+        IDependencyService dependencyService = ((MyApplication) bleDeviceActivity.getApplication()).dependencyService;
+        IBleService bleService = dependencyService.provideBLEService(getContext());
+        IBluetoothStateObserver bluetoothStateObserver = new BluetoothStateObserver(getContext());
+        presenter = dependencyService.providePresenter(this, bleService,bluetoothStateObserver);
+
         // Set the title and subtitle
         // Title - "Bluetooth GATT Services"
         // SubTitle - Selected Device MAC Address
@@ -103,12 +112,6 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
             bleDeviceActivity.setTitle("Bluetooth GATT Services");
             bleDeviceActivity.setSubtitle(selectedDeviceAddress);
         }
-
-        // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
-        assert bleDeviceActivity != null;
-        IDependencyService dependencyService = ((MyApplication) bleDeviceActivity.getApplication()).dependencyService;
-        IBleService bleService = dependencyService.provideBLEService(getContext());
-        presenter = dependencyService.providePresenter(this, bleService);
 
         // Set the properties of RecyclerView
         binding.recyclerView.setHasFixedSize(true);

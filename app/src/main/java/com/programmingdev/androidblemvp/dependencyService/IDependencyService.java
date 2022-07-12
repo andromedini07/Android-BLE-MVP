@@ -12,9 +12,11 @@ import com.programmingdev.androidblemvp.repository.IBleService;
 import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 
 public interface IDependencyService {
-    public IBleService provideBLEService(Context context);
-    public IMainPresenter providePresenter(IMainView view, IBleService bleService);
-    public IMainPresenter providePresenter(IMainView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver);
-    public IBleServiceDisplayPresenter providePresenter(IBleServiceDisplayView view, IBleService bleService);
-    public IBleCharacteristicDisplayPresenter providePresenter(IBleCharacteristicDisplayView view, IBleService bleService);
+    IBleService provideBLEService(Context context);
+    IMainPresenter providePresenter(IMainView view, IBleService bleService);
+    IMainPresenter providePresenter(IMainView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver);
+    IBleServiceDisplayPresenter providePresenter(IBleServiceDisplayView view, IBleService bleService);
+    IBleServiceDisplayPresenter providePresenter(IBleServiceDisplayView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver);
+    IBleCharacteristicDisplayPresenter providePresenter(IBleCharacteristicDisplayView view, IBleService bleService);
+    IBleCharacteristicDisplayPresenter providePresenter(IBleCharacteristicDisplayView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver);
 }

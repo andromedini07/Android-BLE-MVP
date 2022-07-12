@@ -18,7 +18,7 @@ import java.util.List;
  * MainActivity --->MainPresenter[IMainPresenter]---> BleService[IBleService]
  * <p>
  * MainActivity[IMainView] <-- MainPresenter[BleServiceCallbacks]<--- BleService
- *
+ * <p>
  * The Bluetooth Adapter States are forwarded to the MainActivity from the presenter
  * MainActivity[IMainView] <-- MainPresenter[IBluetoothStateObserverCallbacks]
  */
@@ -250,8 +250,14 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
      */
     @Override
     public void destroy() {
-        bleService.unregisterBleServiceCallbacks(this);
-        bluetoothStateObserver.unregister(this);
+        if (bleService != null) {
+            bleService.unregisterBleServiceCallbacks(this);
+        }
+
+        if (bluetoothStateObserver != null) {
+            bluetoothStateObserver.unregister(this);
+        }
+
         view = null;
         bluetoothStateObserver = null;
     }

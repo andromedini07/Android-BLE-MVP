@@ -46,6 +46,20 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
 
     /**
      * Parent - IBleCharacteristicDisplayPresenter (called from BleCharacteristicDisplayFragment)
+     * Request MTU size from the Peripheral
+     *
+     * @param deviceAddress      - MAC Address of theBluetooth device
+     * @param mtuSize        - The MTU size to be set by the Central device
+     */
+    @Override
+    public void requestMTU(String deviceAddress, int mtuSize) {
+        if(bleService!=null){
+            bleService.setMTU(deviceAddress,mtuSize);
+        }
+    }
+
+    /**
+     * Parent - IBleCharacteristicDisplayPresenter (called from BleCharacteristicDisplayFragment)
      * Enables Bluetooth GATT Characteristic Notification.
      *
      * @param deviceAddress      - MAC Address of theBluetooth device
@@ -561,6 +575,23 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
     public void onNotificationsDisabled(String deviceAddress, UUID serviceUUID) {
         if (view != null) {
 
+        }
+    }
+
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the MTU is set to exchange data packets requested by the Central Device.
+     * <p>
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param mtuSize   - The maximum size of the data the device can send to the peripheral in one shot.
+     * @param status - Status of setting the MTU size
+     */
+    @Override
+    public void onMTUSet(String deviceAddress, int mtuSize, int status) {
+        if(view!=null){
+            view.onSetMTU(deviceAddress,mtuSize);
         }
     }
 

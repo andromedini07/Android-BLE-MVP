@@ -13,5 +13,6 @@ import java.util.List;
 public interface IBleServiceDisplayPresenter {
     List<BleServicesDisplay> getServiceDisplayList(List<BluetoothGattService> serviceList);
     void disconnectFromPeripheral(String deviceAddress);
+    void requestMTU(String deviceAddress, int mtuSize);
     void destroy();
 }

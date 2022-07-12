@@ -18,7 +18,7 @@
             android:id="@+id/textViewAlertMessageDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Write Value"
+            android:text="Request MTU Size"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -29,32 +29,16 @@
         android:layout_marginEnd="@dimen/_4sdp"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textViewHexRepresentation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="0x"
-            android:textColor="@color/black" />
-
         <EditText
             android:id="@+id/editTextDataEntry"
             android:layout_width="0dp"
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:ems="11"
-            android:hint="New Value"
+            android:hint="Set the MTU size"
+            android:inputType="number"
             android:textColorHint="@color/material_color_grey_dark" />
-
-        <Spinner
-            android:id="@+id/spinnerDataType"
-            android:layout_width="0dp"
-            android:layout_weight="0.3"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_marginEnd="@dimen/_2sdp" />
 
     </LinearLayout>
 
@@ -81,7 +65,7 @@
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"
+            android:text="SET"
             android:textColor="#41AF4B"
             android:textSize="16sp" />
 

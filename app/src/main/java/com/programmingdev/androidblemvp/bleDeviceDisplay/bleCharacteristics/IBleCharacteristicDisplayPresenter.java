@@ -7,6 +7,7 @@ import java.util.List;
  * The Blueprint of the Presenter used by BleCharacteristicDisplayPresenter to pass data to/from BleCharacteristicDisplayFragment and BleService
  */
 public interface IBleCharacteristicDisplayPresenter {
+    void requestMTU(String deviceAddress,int mtuSize);
     void enableNotification(String deviceAddress, String serviceUUID, String characteristicUUID);
     void enableIndication(String deviceAddress, String serviceUUID, String characteristicUUID);
     void disableNotification(String deviceAddress,String serviceUUID, String characteristicUUID);

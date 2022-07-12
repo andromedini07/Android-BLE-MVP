@@ -2,6 +2,9 @@ package com.programmingdev.androidblemvp.bleDeviceDisplay.bleCharacteristics;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -10,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.programmingdev.androidblemvp.MyApplication;
+import com.programmingdev.androidblemvp.R;
 import com.programmingdev.androidblemvp.databinding.FragmentBleCharacteristicDisplayBinding;
 
 import androidx.activity.OnBackPressedCallback;
@@ -23,11 +27,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.programmingdev.androidblemvp.adapters.GattCharacteristicDisplayListAdapter;
-import com.programmingdev.androidblemvp.alertDialogFragments.DataConfigDialog;
+import com.programmingdev.androidblemvp.dialogFragments.DataConfigDialog;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
 
-import com.programmingdev.androidblemvp.dependencyService.DependencyService;
 import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
+import com.programmingdev.androidblemvp.dialogFragments.MTUConfigDialog;
 import com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay;
 import com.programmingdev.androidblemvp.models.BleDescriptorDisplay;
 import com.programmingdev.androidblemvp.models.BleServicesDisplay;
@@ -94,6 +98,9 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
                 selectedDeviceAddress = bundle.getString("SelectedDeviceAddress");
             }
         }
+
+        // Set Menu
+        setHasOptionsMenu(true);
 
         // This callback will only be called when the BleCharacteristicFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -276,6 +283,45 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
         presenter.destroy();
         binding = null;
         presenter = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.ble_device_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.set_mtu) {
+            if (presenter != null) {
+                // Show DataConfigDialog to the user to enter the MTU size
+                MTUConfigDialog dialogFragment = new MTUConfigDialog();
+                FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+                Fragment prev = activity.getSupportFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+                dialogFragment.show(activity.getSupportFragmentManager(), "dialog");
+                dialogFragment.setDialogListener(new MTUConfigDialog.DialogListener() {
+                    @Override
+                    public void onPositiveButtonClicked(int mtuSize, boolean dialogCancelFlag) {
+                        // Request MTU to be set in the Peripheral
+                        if (presenter != null) {
+                            presenter.requestMTU(selectedDeviceAddress, mtuSize);
+                        }
+                    }
+
+                    @Override
+                    public void onNegativeButtonClicked(String inputText, boolean dialogCancelFlag) {
+
+                    }
+                });
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -512,6 +558,24 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     public void onDisablingNotificationFailed(String deviceAddress, String serviceUUID, String characteristicUUID) {
         console.log(TAG, "Disabling Notification Failed = " + deviceAddress + " Service UUID = " + serviceUUID + " CharacteristicUUID = " + characteristicUUID);
         Toast.makeText(getContext(), "Disabling Notification Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Parent - IBleCharacteristicDisplayView (called by BleCharacteristicDisplayPresenter)
+     * Indicates the MTU size requested by the Bluetooth Central device is set.
+     * <p>
+     * Manipulate UI
+     * Show Toast to user
+     *
+     * @param deviceAddress - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param mtuSize       - The data size to be sent from the central to the peripheral in one shot
+     */
+    @Override
+    public void onSetMTU(String deviceAddress, int mtuSize) {
+        console.log(TAG, "onSetMTU = " + deviceAddress + " " + "MTU Size = " + mtuSize);
+        activity.runOnUiThread(() -> {
+            Toast.makeText(getContext(), "MTU size set to " + mtuSize, Toast.LENGTH_SHORT).show();
+        });
     }
 
     /**

@@ -86,6 +86,37 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
     }
 
     /**
+     * Parent - IBleCharacteristicDisplayPresenter (called from BleCharacteristicDisplayFragment)
+     * Request MTU size from the Peripheral
+     *
+     * @param deviceAddress      - MAC Address of theBluetooth device
+     * @param mtuSize        - The MTU size to be set by the Central device
+     */
+    @Override
+    public void requestMTU(String deviceAddress, int mtuSize) {
+        if(bleService!=null){
+            bleService.setMTU(deviceAddress,mtuSize);
+        }
+    }
+
+    /**
+     * Parent - BluetoothServiceCallbacks (called from BleService)
+     * Indicates that the MTU is set to exchange data packets requested by the Central Device.
+     * <p>
+     * Send to View(BleCharacteristicDisplayFragment)
+     *
+     * @param deviceAddress - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param mtuSize   - The maximum size of the data the device can send to the peripheral in one shot.
+     * @param status - Status of setting the MTU size
+     */
+    @Override
+    public void onMTUSet(String deviceAddress, int mtuSize, int status) {
+        if(view!=null){
+            view.onSetMTU(deviceAddress,mtuSize);
+        }
+    }
+
+    /**
      * Parent - IBleServiceDisplayFragmentPresenter (called from BleServiceDisplayFragment)
      * Destroys and release all resources when BleServiceDisplayFragment is not visible/destroyed.
      * Unregisters callbacks from BleService.

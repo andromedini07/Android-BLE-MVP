@@ -38,4 +38,5 @@ public abstract class BleServiceCallbacks {
   public void onEnablingNotificationFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID){}
   public void onEnablingIndicationFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID){}
   public void onDisablingNotificationFailed(String deviceAddress, UUID serviceUUID, UUID characteristicUUID){}
+  public void onMTUSet(String deviceAddress, int MTUSize, int status){}
 }

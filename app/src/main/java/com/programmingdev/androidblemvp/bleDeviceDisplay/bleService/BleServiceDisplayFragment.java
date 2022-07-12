@@ -3,6 +3,9 @@ package com.programmingdev.androidblemvp.bleDeviceDisplay.bleService;
 import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -11,6 +14,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +26,7 @@ import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
 import com.programmingdev.androidblemvp.dependencyService.DependencyService;
 import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
 
+import com.programmingdev.androidblemvp.dialogFragments.MTUConfigDialog;
 import com.programmingdev.androidblemvp.models.BleServicesDisplay;
 import com.programmingdev.androidblemvp.repository.IBleService;
 import com.programmingdev.androidblemvp.databinding.FragmentBleServiceDisplayBinding;
@@ -55,7 +60,7 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
     private ArrayList<BluetoothGattService> serviceList;
     private GattServiceListAdapter adapter;
     private IBleServiceDisplayPresenter presenter;
-    private BleDeviceActivity bleDeviceActivity;
+    private BleDeviceActivity activity;
 
     // Activity LifeCycle
     @Override
@@ -64,7 +69,7 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
 
         // Get the activity
         if (getActivity() instanceof BleDeviceActivity) {
-            bleDeviceActivity = (BleDeviceActivity) getActivity();
+            activity = (BleDeviceActivity) getActivity();
         }
 
         // Extract the Selected Device Address and the service list from the BleDeviceActivity
@@ -74,6 +79,9 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
             serviceList = bundle.getParcelableArrayList("ServiceList");
         }
 
+        // Set Menu
+        setHasOptionsMenu(true);
+
         // This callback will only be called when the BleServiceDisplayFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -81,8 +89,8 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
                 // Handle the back button event
                 // Disconnect from the Peripheral and exit the parent activity and fragment
                 presenter.disconnectFromPeripheral(selectedDeviceAddress);
-                if (bleDeviceActivity != null) {
-                    bleDeviceActivity.finish();
+                if (activity != null) {
+                    activity.finish();
                 }
             }
         };
@@ -99,8 +107,8 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
         super.onViewCreated(view, savedInstanceState);
 
         // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
-        assert bleDeviceActivity != null;
-        IDependencyService dependencyService = ((MyApplication) bleDeviceActivity.getApplication()).dependencyService;
+        assert activity != null;
+        IDependencyService dependencyService = ((MyApplication) activity.getApplication()).dependencyService;
         IBleService bleService = dependencyService.provideBLEService(getContext());
         IBluetoothStateObserver bluetoothStateObserver = new BluetoothStateObserver(getContext());
         presenter = dependencyService.providePresenter(this, bleService,bluetoothStateObserver);
@@ -108,9 +116,9 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
         // Set the title and subtitle
         // Title - "Bluetooth GATT Services"
         // SubTitle - Selected Device MAC Address
-        if (bleDeviceActivity != null) {
-            bleDeviceActivity.setTitle("Bluetooth GATT Services");
-            bleDeviceActivity.setSubtitle(selectedDeviceAddress);
+        if (activity != null) {
+            activity.setTitle("Bluetooth GATT Services");
+            activity.setSubtitle(selectedDeviceAddress);
         }
 
         // Set the properties of RecyclerView
@@ -124,7 +132,7 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
         binding.recyclerView.setAdapter(adapter);
 
         // Add Divider Lines between the items in the RecyclerView
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(bleDeviceActivity.getApplicationContext(),
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(activity.getApplicationContext(),
                 DividerItemDecoration.VERTICAL);
         binding.recyclerView.addItemDecoration(dividerItemDecoration);
 
@@ -168,6 +176,45 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
         presenter = null;
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.ble_device_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.set_mtu) {
+            if (presenter != null) {
+                // Show DataConfigDialog to the user to enter the MTU size
+                MTUConfigDialog dialogFragment = new MTUConfigDialog();
+                FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+                Fragment prev = activity.getSupportFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+                dialogFragment.show(activity.getSupportFragmentManager(), "dialog");
+                dialogFragment.setDialogListener(new MTUConfigDialog.DialogListener() {
+                    @Override
+                    public void onPositiveButtonClicked(int mtuSize, boolean dialogCancelFlag) {
+                        // Request MTU to be set in the Peripheral
+                        if (presenter != null) {
+                            presenter.requestMTU(selectedDeviceAddress, mtuSize);
+                        }
+                    }
+
+                    @Override
+                    public void onNegativeButtonClicked(String inputText, boolean dialogCancelFlag) {
+
+                    }
+                });
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Parent - IBleServiceDisplayView (called by BleServiceDisplayPresenter)
      * Indicates that the mobile is disconnected from the Bluetooth Device. The Bluetooth Gatt connection is closed prior to invoking this callback.
@@ -182,9 +229,27 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
     public void onDeviceDisconnected(String deviceAddress, int code) {
         console.log(TAG, "onDeviceDisconnected");
         Toast.makeText(getContext(), "Device Disconnected = " + deviceAddress, Toast.LENGTH_SHORT).show();
-        if (bleDeviceActivity != null) {
-            bleDeviceActivity.finish();
+        if (activity != null) {
+            activity.finish();
         }
+    }
+
+    /**
+     * Parent - IBleServiceDisplayView (called by BleCharacteristicDisplayPresenter)
+     * Indicates the MTU size requested by the Bluetooth Central device is set.
+     * <p>
+     * Manipulate UI
+     * Show Toast to user
+     *
+     * @param deviceAddress - The MAC Address of the Bluetooth Device the mobile is disconnected from.
+     * @param mtuSize       - The data size to be sent from the central to the peripheral in one shot
+     */
+    @Override
+    public void onSetMTU(String deviceAddress, int mtuSize) {
+        console.log(TAG, "onSetMTU = " + deviceAddress + " " + "MTU Size = " + mtuSize);
+        activity.runOnUiThread(() -> {
+            Toast.makeText(getContext(), "MTU size set to " + mtuSize, Toast.LENGTH_SHORT).show();
+        });
     }
 
     /**
@@ -199,9 +264,9 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
     public void onBluetoothDisabled() {
         // Some android phones do not disconnect from the peripheral when the Bluetooth is disabled
         presenter.disconnectFromPeripheral(selectedDeviceAddress);
-        bleDeviceActivity.showAlertDialog(0, "Bluetooth Disabled", "Please Enable Bluetooth to continue scanning devices",
+        activity.showAlertDialog(0, "Bluetooth Disabled", "Please Enable Bluetooth to continue scanning devices",
                 (inputText, dialogCancelFlag) -> {
-                    bleDeviceActivity.finish();
+                    activity.finish();
                 });
     }
 //--------------------Private Functions-----------------------------------------------------------------------

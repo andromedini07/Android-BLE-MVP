@@ -17,5 +17,6 @@ public interface IBleCharacteristicDisplayView {
     void onDescriptorReadFailed(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, int errorCode);
     void onDescriptorWriteFailed(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] lastSentData, int errorCode);
     void onDisablingNotificationFailed(String deviceAddress, String serviceUUID, String characteristicUUID);
+    void onSetMTU(String deviceAddress, int mtuSize);
     void onBluetoothDisabled();
 }

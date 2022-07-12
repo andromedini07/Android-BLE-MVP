@@ -279,7 +279,9 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
 
     @Override
     public void onMTUSet(String deviceAddress, int mtuSize, int status) {
-
+       for (BleServiceCallbacks callbacks : callbacksList){
+           callbacks.onMTUSet(deviceAddress,mtuSize,status);
+       }
     }
 
     @Override

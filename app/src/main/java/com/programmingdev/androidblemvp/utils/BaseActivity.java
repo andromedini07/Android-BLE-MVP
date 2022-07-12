@@ -23,8 +23,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.programmingdev.androidblemvp.Constants;
-import com.programmingdev.androidblemvp.alertDialogFragments.GeneralAlertDialog;
-import com.programmingdev.androidblemvp.alertDialogFragments.GeneralPromptAlertDialog;
+import com.programmingdev.androidblemvp.dialogFragments.GeneralAlertDialog;
+import com.programmingdev.androidblemvp.dialogFragments.GeneralPromptAlertDialog;
 import com.programmingdev.androidblemvp.location.LocationAccessPermissionCallback;
 
 public class BaseActivity extends AppCompatActivity {

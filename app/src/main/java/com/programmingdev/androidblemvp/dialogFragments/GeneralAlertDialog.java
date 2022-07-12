@@ -1,4 +1,4 @@
-package com.programmingdev.androidblemvp.alertDialogFragments;
+package com.programmingdev.androidblemvp.dialogFragments;
 
 import android.app.Dialog;
 import android.graphics.Color;

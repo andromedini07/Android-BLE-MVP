@@ -1,9 +1,10 @@
-package com.programmingdev.androidblemvp.alertDialogFragments;
+package com.programmingdev.androidblemvp.dialogFragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.programmingdev.androidblemvp.R;
 import com.programmingdev.androidblemvp.utils.ByteUtils;
+import com.programmingdev.androidblemvp.utils.HexInputFilter;
 
 import java.nio.charset.StandardCharsets;
 
@@ -72,10 +74,12 @@ public class DataConfigDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedDataType = arrayAdapter.getItem(position);
+                editTextDataEntry.setText("");
                 switch (selectedDataType) {
                     case "Bytes":
                         textViewHexRepresentation.setVisibility(View.VISIBLE);
-                        editTextDataEntry.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        editTextDataEntry.setFilters(new InputFilter[]{new HexInputFilter()});
+                        editTextDataEntry.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                         break;
                     case "Text":
                         textViewHexRepresentation.setVisibility(View.GONE);

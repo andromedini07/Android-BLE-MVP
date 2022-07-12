@@ -5,5 +5,6 @@ package com.programmingdev.androidblemvp.bleDeviceDisplay.bleService;
  */
 public interface IBleServiceDisplayView {
     void onDeviceDisconnected(String deviceAddress, int code);
+    void onSetMTU(String deviceAddress, int mtuSize);
     void onBluetoothDisabled();
 }

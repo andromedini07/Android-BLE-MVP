@@ -83,6 +83,7 @@ public class DataConfigDialog extends DialogFragment {
                         break;
                     case "Text":
                         textViewHexRepresentation.setVisibility(View.GONE);
+                        editTextDataEntry.setFilters(new InputFilter[]{});
                         editTextDataEntry.setInputType(InputType.TYPE_CLASS_TEXT);
                         break;
                 }

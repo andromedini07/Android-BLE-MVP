@@ -45,7 +45,7 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
     private boolean allNotificationsDisableInProgress;
 
     private BleService(Context context) {
-        bleScanner = BleScannerFactory.provideInstance(context, BleScanner.class);
+        bleScanner = BleScannerFactory.provideInstance(context);
         bleCentralManager = BleCentralManagerFactory.provideInstance(context);
         callbacksList = new ArrayList<>();
 

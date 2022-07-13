@@ -38,11 +38,10 @@ dependencies {
     implementation 'com.kaopiz:kprogresshud:1.2.0'            // Progress Bar Library
     implementation 'com.intuit.sdp:sdp-android:1.0.6'         // Text Sizing Library
     implementation files('libs/gson-2.4.jar')
-
+    implementation files('libs/ble_comm_module.jar')
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
-    implementation files('libs\\ble_comm_module_1.04.00.jar')
     // Gson Data Serialization Library
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

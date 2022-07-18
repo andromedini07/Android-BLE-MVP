@@ -3,15 +3,17 @@ package com.programmingdev.androidblemvp.repository;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 
+import com.programmingdev.androidblemvp.utils.ByteUtils;
 import com.programmingdev.androidblemvp.utils.console;
 import com.programmingdev.blecommmodule.BluetoothDeviceWrapper;
 import com.programmingdev.blecommmodule.Centralmodule.centralManager.BleCentralManagerFactory;
 import com.programmingdev.blecommmodule.Centralmodule.centralManager.IBleCentralManager;
 import com.programmingdev.blecommmodule.Centralmodule.interfaces.BleCentralManagerCallbacks;
 import com.programmingdev.blecommmodule.ScannerModule.interfaces.BleScannerCallback;
-import com.programmingdev.blecommmodule.ScannerModule.scanner.BleScanner;
 import com.programmingdev.blecommmodule.ScannerModule.scanner.BleScannerFactory;
 import com.programmingdev.blecommmodule.ScannerModule.scanner.IBleScanner;
+import com.programmingdev.blecommmodule.advertisementparser.AdvRecordParserFactory;
+import com.programmingdev.blecommmodule.advertisementparser.IAdvRecordParser;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -22,16 +24,15 @@ import java.util.UUID;
 /**
  * The BleService is the component (implementation) of the IBleService that is responsible for communicating with the Bluetooth Device and
  * delivers the result to the presenter via callbacks.
- *
+ * <p>
  * The IBleCentralManager is the blueprint of the Central Manager that takes care of connecting and communicating with the Bluetooth Device.
  * However, the implementation of this is a closed source.
- *
+ * <p>
  * The IBleScanner is the blueprint of the BLE Scanner that takes care of scanning for Bluetooth Devices.
  * However, the implementation of this is the closed source.
- *
+ * <p>
  * Presenter --> BleService[IBleService] --> [IBleCentralManager,IBleScanner]
  * Presenter[BleServiceCallbacks] <-- BleService[BleCentralManagerCallbacks, BleScannerCallbacks] <-- [BleCentralManager,BleScanner]
- *
  */
 public class BleService extends BleCentralManagerCallbacks implements IBleService, BleScannerCallback {
 
@@ -40,13 +41,15 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
     private static BleService instance;
     private final IBleCentralManager bleCentralManager;
     private final IBleScanner bleScanner;
+    private final IAdvRecordParser advRecordParser;
     private final List<BleServiceCallbacks> callbacksList;
     private Queue<UUID> characteristicUuidQueue;
     private boolean allNotificationsDisableInProgress;
 
     private BleService(Context context) {
-        bleScanner = BleScannerFactory.provideInstance(context, BleScanner.class);
+        bleScanner = BleScannerFactory.provideInstance(context);
         bleCentralManager = BleCentralManagerFactory.provideInstance(context);
+        advRecordParser = AdvRecordParserFactory.provideInstance();
         callbacksList = new ArrayList<>();
 
         bleScanner.allowOperationsOnMainThread(true);
@@ -279,9 +282,9 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
 
     @Override
     public void onMTUSet(String deviceAddress, int mtuSize, int status) {
-       for (BleServiceCallbacks callbacks : callbacksList){
-           callbacks.onMTUSet(deviceAddress,mtuSize,status);
-       }
+        for (BleServiceCallbacks callbacks : callbacksList) {
+            callbacks.onMTUSet(deviceAddress, mtuSize, status);
+        }
     }
 
     @Override
@@ -391,6 +394,8 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
     @Override
     public void onScanResult(BluetoothDeviceWrapper bluetoothDeviceWrapper, byte[] bytes) {
 //        console.log(TAG, "Address = " + bluetoothDeviceWrapper.getBluetoothDevice().getAddress());
+        advRecordParser.parse(bytes);
+        console.log(TAG, "AdvRecordParser - ManufacturerData = " + ByteUtils.getHexStringFromByteArray(bytes, true));
         for (BleServiceCallbacks callbacks : callbacksList) {
             callbacks.onDeviceScanResult(bluetoothDeviceWrapper, bytes);
         }

@@ -5,6 +5,8 @@ import android.content.Context;
 import com.programmingdev.androidblemvp.repository.BleService;
 import com.programmingdev.androidblemvp.repository.IBleService;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,8 +19,9 @@ public class BleServiceModule {
         this.context = context;
     }
 
+    @Singleton
     @Provides
     public IBleService provideBleService() {
-        return BleService.getInstance(context.getApplicationContext());
+        return new BleService(context.getApplicationContext());
     }
 }

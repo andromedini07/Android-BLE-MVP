@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
+import javax.inject.Singleton;
+
 /**
  * The BleService is the component (implementation) of the IBleService that is responsible for communicating with the Bluetooth Device and
  * delivers the result to the presenter via callbacks.
@@ -34,6 +36,7 @@ import java.util.UUID;
  * Presenter --> BleService[IBleService] --> [IBleCentralManager,IBleScanner]
  * Presenter[BleServiceCallbacks] <-- BleService[BleCentralManagerCallbacks, BleScannerCallbacks] <-- [BleCentralManager,BleScanner]
  */
+@Singleton
 public class BleService extends BleCentralManagerCallbacks implements IBleService, BleScannerCallback {
 
     private static final String TAG = "BleService";
@@ -46,7 +49,7 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
     private Queue<UUID> characteristicUuidQueue;
     private boolean allNotificationsDisableInProgress;
 
-    private BleService(Context context) {
+    public BleService(Context context) {
         bleScanner = BleScannerFactory.provideInstance(context);
         bleCentralManager = BleCentralManagerFactory.provideInstance(context);
         advRecordParser = AdvRecordParserFactory.provideInstance();
@@ -63,12 +66,12 @@ public class BleService extends BleCentralManagerCallbacks implements IBleServic
         bleCentralManager.setOnBluetoothCentralListener(this);
     }
 
-    public static BleService getInstance(Context context) {
-        if (instance == null) {
-            instance = new BleService(context.getApplicationContext());
-        }
-        return instance;
-    }
+//    public static BleService getInstance(Context context) {
+//        if (instance == null) {
+//            instance = new BleService(context.getApplicationContext());
+//        }
+//        return instance;
+//    }
 
     @Override
     public void startDeviceScan() {

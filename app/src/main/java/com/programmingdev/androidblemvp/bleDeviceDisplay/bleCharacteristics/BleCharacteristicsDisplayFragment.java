@@ -27,17 +27,18 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.programmingdev.androidblemvp.adapters.GattCharacteristicDisplayListAdapter;
+import com.programmingdev.androidblemvp.di.components.ActivityComponent;
+import com.programmingdev.androidblemvp.di.components.ApplicationComponent;
+
+import com.programmingdev.androidblemvp.di.components.DaggerActivityComponent;
+import com.programmingdev.androidblemvp.di.modules.PresenterModule;
 import com.programmingdev.androidblemvp.dialogFragments.DataConfigDialog;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
 
-import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
 import com.programmingdev.androidblemvp.dialogFragments.MTUConfigDialog;
 import com.programmingdev.androidblemvp.models.BleCharacteristicsDisplay;
 import com.programmingdev.androidblemvp.models.BleDescriptorDisplay;
 import com.programmingdev.androidblemvp.models.BleServicesDisplay;
-import com.programmingdev.androidblemvp.repository.IBleService;
-import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
-import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.androidblemvp.utils.ByteUtils;
 import com.programmingdev.androidblemvp.utils.console;
 
@@ -76,6 +77,7 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     private BleDeviceActivity activity;
     private IBleCharacteristicDisplayPresenter presenter;
     private String selectedDeviceAddress;
+    private ActivityComponent activityComponent;
 
     // Activity LifeCycle
     @Override
@@ -115,6 +117,14 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+        // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
+        ApplicationComponent applicationComponent = ((MyApplication) activity.getApplication()).getApplicationComponent();
+        ActivityComponent activityComponent = DaggerActivityComponent.builder()
+                .applicationComponent(applicationComponent)
+                .presenterModule(new PresenterModule())
+                .build();
+        presenter = activityComponent.getBleCharacteristicDisplayPresenter();
     }
 
     @Override
@@ -127,13 +137,6 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
-        assert activity != null;
-        IDependencyService dependencyService = ((MyApplication) activity.getApplication()).dependencyService;
-        IBleService bleService = dependencyService.provideBLEService(getContext());
-        IBluetoothStateObserver bluetoothStateObserver = new BluetoothStateObserver(getContext());
-        presenter = dependencyService.providePresenter(this, bleService, bluetoothStateObserver);
 
         // Set the title and subtitle
         // Title - "Bluetooth GATT Characteristic"
@@ -264,6 +267,9 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     @Override
     public void onStart() {
         super.onStart();
+
+        presenter.attachView(this);
+
         List<BleCharacteristicsDisplay> wrapperList = selectedBleServicesDisplay.characteristicsDisplayList;
         if (wrapperList != null && !wrapperList.isEmpty()) {
             adapter.update(wrapperList);
@@ -273,6 +279,12 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.detachView();
+    }
+
     /**
      * Activity Lifecycle - onDestroyView
      * Release resources.
@@ -280,8 +292,12 @@ public class BleCharacteristicsDisplayFragment extends Fragment implements IBleC
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.destroy();
         binding = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         presenter = null;
     }
 

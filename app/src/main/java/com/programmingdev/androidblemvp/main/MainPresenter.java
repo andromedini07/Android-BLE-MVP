@@ -9,6 +9,8 @@ import com.programmingdev.blecommmodule.BluetoothDeviceWrapper;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Component (implementation) of IMainPresenter interface. The presenter can be mocked for unit testing.
  * The MainPresenter is the intermediate layer that passes information from the MainActivity (View) to the BleService (Repository).
@@ -29,19 +31,10 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
     private final IBleService bleService;
     private IBluetoothStateObserver bluetoothStateObserver;   // Observer that reports Bluetooth Adapter State Changes. Bluetooth Enabling/Disabling states are reported via this observer
 
-    public MainPresenter(IMainView view, IBleService bleService) {
-        this.view = view;
-        this.bleService = bleService;
-        this.bleService.registerBleServiceCallbacks(this);
-        this.bluetoothStateObserver = null;
-    }
-
-    public MainPresenter(IMainView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
-        this.view = view;
+    @Inject
+    public MainPresenter(IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
         this.bleService = bleService;
         this.bluetoothStateObserver = bluetoothStateObserver;
-        this.bluetoothStateObserver.register(this);
-        this.bleService.registerBleServiceCallbacks(this);
     }
 
     /**
@@ -241,6 +234,19 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
         return !connectingDevicesList.isEmpty();
     }
 
+    @Override
+    public void attachView(IMainView view) {
+        if(bleService!=null){
+            this.bleService.registerBleServiceCallbacks(this);
+        }
+
+        if(bluetoothStateObserver!=null){
+            this.bluetoothStateObserver.register(this);
+        }
+
+        this.view = view;
+    }
+
     /**
      * Parent - IMainPresenter (called from MainActivity)
      * Destroys and release all resources when MainActivity is not visible/destroyed.
@@ -249,7 +255,7 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
      * Disconnect view with presenter.
      */
     @Override
-    public void destroy() {
+    public void detachView() {
         if (bleService != null) {
             bleService.unregisterBleServiceCallbacks(this);
         }
@@ -259,7 +265,6 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
         }
 
         view = null;
-        bluetoothStateObserver = null;
     }
 
     /**

@@ -23,15 +23,14 @@ import com.programmingdev.androidblemvp.MyApplication;
 import com.programmingdev.androidblemvp.R;
 import com.programmingdev.androidblemvp.adapters.GattServiceListAdapter;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
-import com.programmingdev.androidblemvp.dependencyService.DependencyService;
-import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
 
+import com.programmingdev.androidblemvp.di.components.ActivityComponent;
+import com.programmingdev.androidblemvp.di.components.ApplicationComponent;
+import com.programmingdev.androidblemvp.di.components.DaggerActivityComponent;
+import com.programmingdev.androidblemvp.di.modules.PresenterModule;
 import com.programmingdev.androidblemvp.dialogFragments.MTUConfigDialog;
 import com.programmingdev.androidblemvp.models.BleServicesDisplay;
-import com.programmingdev.androidblemvp.repository.IBleService;
 import com.programmingdev.androidblemvp.databinding.FragmentBleServiceDisplayBinding;
-import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
-import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.androidblemvp.utils.console;
 
 import java.util.ArrayList;
@@ -95,6 +94,13 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+        ApplicationComponent applicationComponent = ((MyApplication)activity.getApplication()).getApplicationComponent();
+        ActivityComponent activityComponent = DaggerActivityComponent.builder()
+                .applicationComponent(applicationComponent)
+                .presenterModule(new PresenterModule())
+                .build();
+        presenter = activityComponent.getBleServiceDisplayPresenter();
     }
 
     @Override
@@ -105,13 +111,6 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Instantiate the DependencyService Object and get the components required to instantiate the Presenter
-        assert activity != null;
-        IDependencyService dependencyService = ((MyApplication) activity.getApplication()).dependencyService;
-        IBleService bleService = dependencyService.provideBLEService(getContext());
-        IBluetoothStateObserver bluetoothStateObserver = new BluetoothStateObserver(getContext());
-        presenter = dependencyService.providePresenter(this, bleService,bluetoothStateObserver);
 
         // Set the title and subtitle
         // Title - "Bluetooth GATT Services"
@@ -155,6 +154,8 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
     @Override
     public void onStart() {
         super.onStart();
+        presenter.attachView(this);
+
         List<BleServicesDisplay> bleServicesDisplays = presenter.getServiceDisplayList(serviceList);
         if (bleServicesDisplays != null && !bleServicesDisplays.isEmpty()) {
             displayServicesList();
@@ -164,6 +165,12 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
         adapter.update(bleServicesDisplays);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.detachView();
+    }
+
     /**
      * Activity Lifecycle - onDestroyView
      * Release resources.
@@ -171,8 +178,12 @@ public class BleServiceDisplayFragment extends Fragment implements IBleServiceDi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.destroy();
         binding = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         presenter = null;
     }
 

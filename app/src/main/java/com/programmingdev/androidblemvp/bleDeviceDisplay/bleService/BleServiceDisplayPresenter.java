@@ -10,6 +10,8 @@ import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluet
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Component (implementation) of IBleServiceDisplayFragmentPresenter interface. The presenter can be mocked for unit testing.
  * The BleServiceDisplayPresenter is the controller layer that gets information from the BleServiceDisplayFragment (View), processes it and
@@ -31,19 +33,10 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
     private final IBleService bleService;
     private IBluetoothStateObserver bluetoothStateObserver;   // Observer that reports Bluetooth Adapter State Changes. Bluetooth Enabling/Disabling states are reported via this observer
 
-    public BleServiceDisplayPresenter(IBleServiceDisplayView view, IBleService bleService) {
-        this.view = view;
-        this.bleService = bleService;
-        this.bleService.registerBleServiceCallbacks(this);
-        this.bluetoothStateObserver = null;
-    }
-
-    public BleServiceDisplayPresenter(IBleServiceDisplayView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
-        this.view = view;
+    @Inject
+    public BleServiceDisplayPresenter(IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
         this.bleService = bleService;
         this.bluetoothStateObserver = bluetoothStateObserver;
-        this.bleService.registerBleServiceCallbacks(this);
-        this.bluetoothStateObserver.register(this);
     }
 
     /**
@@ -89,13 +82,13 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
      * Parent - IBleCharacteristicDisplayPresenter (called from BleCharacteristicDisplayFragment)
      * Request MTU size from the Peripheral
      *
-     * @param deviceAddress      - MAC Address of theBluetooth device
-     * @param mtuSize        - The MTU size to be set by the Central device
+     * @param deviceAddress - MAC Address of theBluetooth device
+     * @param mtuSize       - The MTU size to be set by the Central device
      */
     @Override
     public void requestMTU(String deviceAddress, int mtuSize) {
-        if(bleService!=null){
-            bleService.setMTU(deviceAddress,mtuSize);
+        if (bleService != null) {
+            bleService.setMTU(deviceAddress, mtuSize);
         }
     }
 
@@ -106,14 +99,27 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
      * Send to View(BleCharacteristicDisplayFragment)
      *
      * @param deviceAddress - The MAC Address of the Bluetooth Device the mobile is disconnected from.
-     * @param mtuSize   - The maximum size of the data the device can send to the peripheral in one shot.
-     * @param status - Status of setting the MTU size
+     * @param mtuSize       - The maximum size of the data the device can send to the peripheral in one shot.
+     * @param status        - Status of setting the MTU size
      */
     @Override
     public void onMTUSet(String deviceAddress, int mtuSize, int status) {
-        if(view!=null){
-            view.onSetMTU(deviceAddress,mtuSize);
+        if (view != null) {
+            view.onSetMTU(deviceAddress, mtuSize);
         }
+    }
+
+    @Override
+    public void attachView(IBleServiceDisplayView view) {
+        if (bleService != null) {
+            bleService.registerBleServiceCallbacks(this);
+        }
+
+        if (bluetoothStateObserver != null) {
+            bluetoothStateObserver.register(this);
+        }
+
+        this.view = view;
     }
 
     /**
@@ -124,7 +130,7 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
      * Disconnect view with presenter.
      */
     @Override
-    public void destroy() {
+    public void detachView() {
         if (bleService != null) {
             bleService.unregisterBleServiceCallbacks(this);
         }
@@ -134,7 +140,6 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
         }
 
         view = null;
-        bluetoothStateObserver = null;
     }
 
     /**

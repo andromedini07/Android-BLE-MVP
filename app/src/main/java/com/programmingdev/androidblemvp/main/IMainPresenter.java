@@ -13,5 +13,7 @@ public interface IMainPresenter {
     void disconnect(String deviceAddress);
     boolean isScanning();
     boolean isDeviceConnectionInProgress();
-    void destroy();
+
+    void attachView(IMainView view);
+    void detachView();
 }

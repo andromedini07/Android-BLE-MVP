@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 /**
  * Component (implementation) of IBleCharacteristicDisplayPresenter interface. The presenter can be mocked for unit testing.
  * The BleCharacteristicDisplayPresenter is the intermediate layer that passes information from the BleCharacteristicDisplayFragment (View)
@@ -29,32 +31,23 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
     private final IBleService bleService;
     private IBluetoothStateObserver bluetoothStateObserver;
 
-    public BleCharacteristicDisplayPresenter(IBleCharacteristicDisplayView view, IBleService bleService) {
-        this.view = view;
-        this.bleService = bleService;
-        this.bluetoothStateObserver = null;
-        this.bleService.registerBleServiceCallbacks(this);
-    }
-
-    public BleCharacteristicDisplayPresenter(IBleCharacteristicDisplayView view, IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
-        this.view = view;
+    @Inject
+    public BleCharacteristicDisplayPresenter(IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {
         this.bleService = bleService;
         this.bluetoothStateObserver = bluetoothStateObserver;
-        this.bleService.registerBleServiceCallbacks(this);
-        this.bluetoothStateObserver.register(this);
     }
 
     /**
      * Parent - IBleCharacteristicDisplayPresenter (called from BleCharacteristicDisplayFragment)
      * Request MTU size from the Peripheral
      *
-     * @param deviceAddress      - MAC Address of theBluetooth device
-     * @param mtuSize        - The MTU size to be set by the Central device
+     * @param deviceAddress - MAC Address of theBluetooth device
+     * @param mtuSize       - The MTU size to be set by the Central device
      */
     @Override
     public void requestMTU(String deviceAddress, int mtuSize) {
-        if(bleService!=null){
-            bleService.setMTU(deviceAddress,mtuSize);
+        if (bleService != null) {
+            bleService.setMTU(deviceAddress, mtuSize);
         }
     }
 
@@ -223,6 +216,19 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         bleService.disconnect(deviceAddress);
     }
 
+    @Override
+    public void attachView(IBleCharacteristicDisplayView view) {
+        if (bleService != null) {
+            this.bleService.registerBleServiceCallbacks(this);
+        }
+
+        if (bluetoothStateObserver != null) {
+            this.bluetoothStateObserver.register(this);
+        }
+
+        this.view = view;
+    }
+
     /**
      * Parent - IBleCharacteristicDisplayPresenter (called from BleCharacteristicDisplayFragment)
      * Destroys and release all resources when BleCharacteristicDisplayFragment is not visible/destroyed.
@@ -231,7 +237,7 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
      * Disconnect view with presenter.
      */
     @Override
-    public void destroy() {
+    public void detachView() {
         if (bleService != null) {
             bleService.unregisterBleServiceCallbacks(this);
         }
@@ -241,7 +247,6 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
         }
 
         view = null;
-        bluetoothStateObserver = null;
     }
 
     /**
@@ -585,13 +590,13 @@ public class BleCharacteristicDisplayPresenter extends BleServiceCallbacks imple
      * Send to View(BleCharacteristicDisplayFragment)
      *
      * @param deviceAddress - The MAC Address of the Bluetooth Device the mobile is disconnected from.
-     * @param mtuSize   - The maximum size of the data the device can send to the peripheral in one shot.
-     * @param status - Status of setting the MTU size
+     * @param mtuSize       - The maximum size of the data the device can send to the peripheral in one shot.
+     * @param status        - Status of setting the MTU size
      */
     @Override
     public void onMTUSet(String deviceAddress, int mtuSize, int status) {
-        if(view!=null){
-            view.onSetMTU(deviceAddress,mtuSize);
+        if (view != null) {
+            view.onSetMTU(deviceAddress, mtuSize);
         }
     }
 

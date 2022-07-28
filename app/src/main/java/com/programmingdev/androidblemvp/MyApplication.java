@@ -2,8 +2,12 @@ package com.programmingdev.androidblemvp;
 
 import android.app.Application;
 
-import com.programmingdev.androidblemvp.dependencyService.DependencyService;
-import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
+import com.programmingdev.androidblemvp.di.components.ApplicationComponent;
+import com.programmingdev.androidblemvp.di.components.DaggerApplicationComponent;
+import com.programmingdev.androidblemvp.di.modules.ApplicationModule;
+import com.programmingdev.androidblemvp.di.modules.BleServiceModule;
+import com.programmingdev.androidblemvp.di.modules.BluetoothStateObserverModule;
+
 
 // Todo Dependency Injection - Dagger 2
 // Todo DataBinding
@@ -13,6 +17,20 @@ import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
 // Custom Application class that needs to be specified
 // in the AndroidManifest.xml file
 public class MyApplication extends Application {
-    // Instance of AppContainer that will be used by all the Activities of the app
-    public IDependencyService dependencyService = new DependencyService();
+    private ApplicationComponent applicationComponent;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .bleServiceModule(new BleServiceModule(this))
+                .bluetoothStateObserverModule(new BluetoothStateObserverModule(this))
+                .build();
+    }
+
+    public ApplicationComponent getApplicationComponent(){
+        return applicationComponent;
+    }
 }

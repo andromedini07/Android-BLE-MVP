@@ -18,5 +18,7 @@ public interface IBleCharacteristicDisplayPresenter {
     void writeData(String deviceAddress, String serviceUUID, String characteristicUUID, String descriptorUUID, byte[] data);
     void disableNotifications(String deviceAddress, String serviceUUID, List<BleCharacteristicsDisplay> characteristicsDisplayList);
     void disconnectFromPeripheral(String deviceAddress);
-    void destroy();
+
+    void attachView(IBleCharacteristicDisplayView view);
+    void detachView();
 }

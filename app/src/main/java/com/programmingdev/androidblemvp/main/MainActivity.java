@@ -19,13 +19,14 @@ import android.widget.Toast;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.programmingdev.androidblemvp.MyApplication;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.BleDeviceActivity;
-import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
-import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
+import com.programmingdev.androidblemvp.di.components.ActivityComponent;
+import com.programmingdev.androidblemvp.di.components.ApplicationComponent;
+
+import com.programmingdev.androidblemvp.di.components.DaggerActivityComponent;
+import com.programmingdev.androidblemvp.di.modules.PresenterModule;
 import com.programmingdev.androidblemvp.utils.BaseActivity;
 import com.programmingdev.androidblemvp.adapters.DeviceListAdapter;
-import com.programmingdev.androidblemvp.dependencyService.DependencyService;
-import com.programmingdev.androidblemvp.repository.IBleService;
-import com.programmingdev.androidblemvp.dependencyService.IDependencyService;
+
 import com.programmingdev.androidblemvp.R;
 import com.programmingdev.androidblemvp.utils.console;
 import com.programmingdev.androidblemvp.location.LocationAccessPermissionCallback;
@@ -65,6 +66,13 @@ public class MainActivity extends BaseActivity implements IMainView, LocationAcc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ApplicationComponent applicationComponent = ((MyApplication)getApplication()).getApplicationComponent();
+        ActivityComponent activityComponent = DaggerActivityComponent.builder()
+                .applicationComponent(applicationComponent)
+                .presenterModule(new PresenterModule())
+                .build();
+        presenter = activityComponent.getMainPresenter();
 
         // Set action bar color programmatically
         ActionBar actionBar = getSupportActionBar();
@@ -122,13 +130,8 @@ public class MainActivity extends BaseActivity implements IMainView, LocationAcc
     @Override
     protected void onStart() {
         super.onStart();
+        presenter.attachView(this);
         locationAccessPermissionCallback = this;
-
-        IDependencyService dependencyService = ((MyApplication) getApplication()).dependencyService;
-        IBleService bleService = dependencyService.provideBLEService(getApplicationContext());
-        IBluetoothStateObserver bluetoothStateObserver = new BluetoothStateObserver(getApplicationContext());
-        presenter = dependencyService.providePresenter(this, bleService, bluetoothStateObserver);
-
         checkCoarseLocation();
     }
 
@@ -151,9 +154,8 @@ public class MainActivity extends BaseActivity implements IMainView, LocationAcc
 //            }
 //        }
 
-        presenter.destroy();
-        presenter = null;
         locationAccessPermissionCallback = null;
+        presenter.detachView();
     }
 
     /**

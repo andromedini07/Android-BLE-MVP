@@ -236,11 +236,11 @@ public class MainPresenter extends BleServiceCallbacks implements IMainPresenter
 
     @Override
     public void attachView(IMainView view) {
-        if(bleService!=null){
+        if (bleService != null) {
             this.bleService.registerBleServiceCallbacks(this);
         }
 
-        if(bluetoothStateObserver!=null){
+        if (bluetoothStateObserver != null) {
             this.bluetoothStateObserver.register(this);
         }
 

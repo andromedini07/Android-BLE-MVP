@@ -2,7 +2,7 @@ package com.programmingdev.androidblemvp.presenter;
 
 import android.bluetooth.BluetoothGattService;
 
-import com.programmingdev.androidblemvp.main.FakeMainView;
+import com.programmingdev.androidblemvp.view.FakeMainView;
 import com.programmingdev.androidblemvp.main.IMainPresenter;
 import com.programmingdev.androidblemvp.main.IMainView;
 import com.programmingdev.androidblemvp.main.MainPresenter;

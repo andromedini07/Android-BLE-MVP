@@ -1,12 +1,13 @@
-package com.programmingdev.androidblemvp.main;
+package com.programmingdev.androidblemvp.view;
 
 import android.bluetooth.BluetoothGattService;
 
+import com.programmingdev.androidblemvp.main.IMainView;
 import com.programmingdev.blecommmodule.BluetoothDeviceWrapper;
 
 import java.util.List;
 
-public class FakeMainView implements IMainView{
+public class FakeMainView implements IMainView {
     @Override
     public void onDeviceScanStarted() {
        System.out.println("Scan Started");

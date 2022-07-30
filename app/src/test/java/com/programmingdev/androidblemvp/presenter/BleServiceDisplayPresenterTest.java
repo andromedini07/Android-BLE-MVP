@@ -1,8 +1,11 @@
 package com.programmingdev.androidblemvp.presenter;
 
+import android.bluetooth.BluetoothGattService;
+
 import com.programmingdev.androidblemvp.bleDeviceDisplay.bleService.BleServiceDisplayPresenter;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.bleService.IBleServiceDisplayPresenter;
 import com.programmingdev.androidblemvp.bleDeviceDisplay.bleService.IBleServiceDisplayView;
+import com.programmingdev.androidblemvp.models.BleServicesDisplay;
 import com.programmingdev.androidblemvp.repository.BleService;
 import com.programmingdev.androidblemvp.repository.IBleService;
 import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.BluetoothStateObserver;
@@ -12,9 +15,17 @@ import com.programmingdev.androidblemvp.view.FakeBleServiceDisplay;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BleServiceDisplayPresenterTest {
     private IBleServiceDisplayPresenter presenter;
@@ -24,20 +35,28 @@ public class BleServiceDisplayPresenterTest {
 
     @Before
     public void initialize() {
-        view = Mockito.mock(FakeBleServiceDisplay.class);
-        bleService = Mockito.mock(BleService.class);
-        bluetoothStateObserver = Mockito.mock(BluetoothStateObserver.class);
+        view = mock(FakeBleServiceDisplay.class);
+        bleService = mock(BleService.class);
+        bluetoothStateObserver = mock(BluetoothStateObserver.class);
         presenter = new BleServiceDisplayPresenter(bleService, bluetoothStateObserver);
     }
 
     @Test
     public void testToGetServiceDisplayList() {
+        BluetoothGattService bluetoothGattService = mock(BluetoothGattService.class);
+        when(bluetoothGattService.getUuid()).thenReturn(UUID.fromString("67f771b6-733d-4e6c-9420-fd8f31a14d17"));
 
+        List<BluetoothGattService> bluetoothGattServiceList = new ArrayList<>();
+        bluetoothGattServiceList.add(bluetoothGattService);
+
+        List<BleServicesDisplay> serviceDisplayList = presenter.getServiceDisplayList(bluetoothGattServiceList);
+        assertFalse("Service Display List should not be empty",serviceDisplayList.isEmpty());
     }
 
     @Test
     public void testToGetServiceDisplayListWithNullInput() {
-
+        List<BleServicesDisplay> serviceDisplayList = presenter.getServiceDisplayList(null);
+        assertTrue("Service Display List should be empty",serviceDisplayList.isEmpty());
     }
 
     @Test
@@ -70,18 +89,18 @@ public class BleServiceDisplayPresenterTest {
     }
 
     @Test
-    public void testToRequestMTUWithNullAddress(){
-        presenter.requestMTU(null,512);
+    public void testToRequestMTUWithNullAddress() {
+        presenter.requestMTU(null, 512);
     }
 
     @Test
-    public void testToRequestMTUWithEmptyAddress(){
-        presenter.requestMTU("",512);
+    public void testToRequestMTUWithEmptyAddress() {
+        presenter.requestMTU("", 512);
     }
 
     @Test
-    public void testToRequestMTUWithInvalidAddress(){
-        presenter.requestMTU("asxaxsas111---",512);
+    public void testToRequestMTUWithInvalidAddress() {
+        presenter.requestMTU("asxaxsas111---", 512);
     }
 
     @Test

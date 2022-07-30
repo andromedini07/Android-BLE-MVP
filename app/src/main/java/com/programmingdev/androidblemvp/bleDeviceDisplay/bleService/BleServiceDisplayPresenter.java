@@ -63,8 +63,10 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
     @Override
     public List<BleServicesDisplay> getServiceDisplayList(List<BluetoothGattService> serviceList) {
         List<BleServicesDisplay> bleServicesDisplays = new ArrayList<>();
-        for (BluetoothGattService service : serviceList) {
-            bleServicesDisplays.add(new BleServicesDisplay(service));
+        if(serviceList!=null){
+            for (BluetoothGattService service : serviceList) {
+                bleServicesDisplays.add(new BleServicesDisplay(service));
+            }
         }
         return bleServicesDisplays;
     }

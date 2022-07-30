@@ -2,12 +2,12 @@ package com.programmingdev.androidblemvp.presenter;
 
 import android.bluetooth.BluetoothGattService;
 
+import com.programmingdev.androidblemvp.repository.IBleService;
+import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.androidblemvp.view.FakeMainView;
 import com.programmingdev.androidblemvp.main.IMainPresenter;
 import com.programmingdev.androidblemvp.main.IMainView;
 import com.programmingdev.androidblemvp.main.MainPresenter;
-import com.programmingdev.androidblemvp.repository.IBleService;
-import com.programmingdev.androidblemvp.repository.bluetoothStateObserver.IBluetoothStateObserver;
 import com.programmingdev.blecommmodule.BluetoothDeviceWrapper;
 
 import org.junit.Before;

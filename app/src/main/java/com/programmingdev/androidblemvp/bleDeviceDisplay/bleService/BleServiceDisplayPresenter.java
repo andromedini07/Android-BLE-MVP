@@ -31,7 +31,7 @@ public class BleServiceDisplayPresenter extends BleServiceCallbacks implements I
 
     private IBleServiceDisplayView view;
     private final IBleService bleService;
-    private IBluetoothStateObserver bluetoothStateObserver;   // Observer that reports Bluetooth Adapter State Changes. Bluetooth Enabling/Disabling states are reported via this observer
+    private final IBluetoothStateObserver bluetoothStateObserver;   // Observer that reports Bluetooth Adapter State Changes. Bluetooth Enabling/Disabling states are reported via this observer
 
     @Inject
     public BleServiceDisplayPresenter(IBleService bleService, IBluetoothStateObserver bluetoothStateObserver) {

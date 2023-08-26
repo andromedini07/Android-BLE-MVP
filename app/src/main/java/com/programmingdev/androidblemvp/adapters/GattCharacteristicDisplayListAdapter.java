@@ -133,13 +133,13 @@ public class GattCharacteristicDisplayListAdapter extends RecyclerView.Adapter<G
             if (holder.buttonIndicate.getVisibility() == View.VISIBLE) {
                 holder.buttonIndicate.setText("Disable Indication");
             } else if (holder.buttonNotify.getVisibility() == View.VISIBLE) {
-                holder.buttonIndicate.setText("Disable Notification");
+                holder.buttonNotify.setText("Disable Notification");
             }
         } else {
             if (holder.buttonIndicate.getVisibility() == View.VISIBLE) {
                 holder.buttonIndicate.setText("Indicate");
             } else if (holder.buttonNotify.getVisibility() == View.VISIBLE) {
-                holder.buttonIndicate.setText("Notify");
+                holder.buttonNotify.setText("Notify");
             }
         }
 
